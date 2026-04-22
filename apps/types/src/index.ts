@@ -1,7 +1,7 @@
 export interface Pedestrian {
   id: string;
   name: string;
-  mood: 'happy' | 'sad' | 'neutral';
+  mood: 'happy' | 'sad' | 'angry' | 'excited' | 'scared' | 'shocked';
   velocity: number;
   thirst: number;
   pathPoints?: { x: number; y: number }[];

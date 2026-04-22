@@ -7,6 +7,15 @@ interface PedestrianIconProps {
   onFinish: (id: string) => void;
 }
 
+const moodEmojiMap: Record<Pedestrian["mood"], string> = {
+  happy: "🙂",
+  sad: "😢",
+  angry: "😡",
+  excited: "🤩",
+  scared: "😨",
+  shocked: "😵‍💫",
+};
+
 function velocityToPlaybackRate(velocity: number): number {
   // Keep a conservative range to avoid jarring speed jumps.
   return Math.min(2, Math.max(0.5, velocity / 5));
@@ -83,7 +92,7 @@ function PedestrianIconComponent({ pedestrian, onFinish }: PedestrianIconProps) 
       }}
       className="absolute left-0 top-0 flex items-center justify-center text-[10px] leading-[10px] cursor-default"
     >
-      🙂
+      {moodEmojiMap[pedestrian.mood]}
     </div>
   );
 }
