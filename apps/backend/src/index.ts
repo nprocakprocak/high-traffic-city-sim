@@ -22,16 +22,46 @@ function randomRemovalDelayMs(): number {
   return seconds * 1000;
 }
 
+function randomVelocityUpdateDelayMs(): number {
+  const seconds = 2 + Math.floor(Math.random() * 5);
+  return seconds * 1000;
+}
+
 io.on("connection", (socket) => {
   console.log(`Client connected: ${socket.id}`);
 
   const removalTimeouts: ReturnType<typeof setTimeout>[] = [];
+  const velocityUpdateTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
+  const activePedestrians = new Set<string>();
 
   const intervalId = setInterval(() => {
     const pedestrian = PedestrianService.generateRandomPedestrian();
     socket.emit("pedestrian", pedestrian);
+    activePedestrians.add(pedestrian.id);
+
+    let currentVelocity = pedestrian.velocity;
+    const scheduleVelocityUpdate = () => {
+      const timeoutId = setTimeout(() => {
+        if (!activePedestrians.has(pedestrian.id)) {
+          return;
+        }
+
+        currentVelocity = Math.max(1, currentVelocity / 2);
+        socket.emit("update_pedestrian", { id: pedestrian.id, velocity: currentVelocity });
+        scheduleVelocityUpdate();
+      }, randomVelocityUpdateDelayMs());
+
+      velocityUpdateTimeouts.set(pedestrian.id, timeoutId);
+    };
+    scheduleVelocityUpdate();
 
     const timeoutId = setTimeout(() => {
+      activePedestrians.delete(pedestrian.id);
+      const velocityTimeoutId = velocityUpdateTimeouts.get(pedestrian.id);
+      if (velocityTimeoutId) {
+        clearTimeout(velocityTimeoutId);
+        velocityUpdateTimeouts.delete(pedestrian.id);
+      }
       socket.emit("remove_pedestrian", pedestrian.id);
     }, randomRemovalDelayMs());
     removalTimeouts.push(timeoutId);
@@ -43,6 +73,11 @@ io.on("connection", (socket) => {
     for (const timeoutId of removalTimeouts) {
       clearTimeout(timeoutId);
     }
+    for (const timeoutId of velocityUpdateTimeouts.values()) {
+      clearTimeout(timeoutId);
+    }
+    velocityUpdateTimeouts.clear();
+    activePedestrians.clear();
     removalTimeouts.length = 0;
   });
 });

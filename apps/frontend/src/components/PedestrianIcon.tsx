@@ -50,7 +50,7 @@ function PedestrianIconComponent({ pedestrian, onFinish }: PedestrianIconProps) 
     return () => {
       animation.cancel();
     };
-  }, [pedestrian.id, pedestrian.pathPoints, pedestrian.velocity]);
+  }, [pedestrian.id, pedestrian.pathPoints]);
 
   return (
     <div

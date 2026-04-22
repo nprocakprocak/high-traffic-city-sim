@@ -60,7 +60,7 @@ export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps)
     });
   }, []);
 
-  const { error } = useWebSocket(onNewPedestrian, removePedestrian);
+  const { error } = useWebSocket(onNewPedestrian, removePedestrian, updatePedestrian);
 
   return {
     pedestrians,
