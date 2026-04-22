@@ -11,12 +11,26 @@ export class PedestrianService {
 
   private static readonly MOODS: Pedestrian['mood'][] = ['happy', 'sad', 'neutral'];
 
+  static randomVelocity(): number {
+    return Math.floor(Math.random() * 10) + 1; // 1-10
+  }
+
+  static randomRemovalDelayMs(): number {
+    const seconds = 5 + Math.floor(Math.random() * 16); // 5-20
+    return seconds * 1000;
+  }
+
+  static randomVelocityUpdateDelayMs(): number {
+    const seconds = 2 + Math.floor(Math.random() * 5); // 2-6
+    return seconds * 1000;
+  }
+
   static generateRandomPedestrian(): Pedestrian {
     return {
       id: randomUUID(),
       name: this.NAMES[Math.floor(Math.random() * this.NAMES.length)],
       mood: this.MOODS[Math.floor(Math.random() * this.MOODS.length)],
-      velocity: Math.floor(Math.random() * 10) + 1, // 1-10
+      velocity: this.randomVelocity(),
       thirst: Math.floor(Math.random() * 3) + 8 // 8-10
     };
   }

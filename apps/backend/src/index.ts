@@ -17,16 +17,6 @@ const io = new Server(httpServer, {
   }
 });
 
-function randomRemovalDelayMs(): number {
-  const seconds = 5 + Math.floor(Math.random() * 16);
-  return seconds * 1000;
-}
-
-function randomVelocityUpdateDelayMs(): number {
-  const seconds = 2 + Math.floor(Math.random() * 5);
-  return seconds * 1000;
-}
-
 io.on("connection", (socket) => {
   console.log(`Client connected: ${socket.id}`);
 
@@ -39,17 +29,18 @@ io.on("connection", (socket) => {
     socket.emit("pedestrian", pedestrian);
     activePedestrians.add(pedestrian.id);
 
-    let currentVelocity = pedestrian.velocity;
     const scheduleVelocityUpdate = () => {
       const timeoutId = setTimeout(() => {
         if (!activePedestrians.has(pedestrian.id)) {
           return;
         }
 
-        currentVelocity = Math.max(1, currentVelocity / 2);
-        socket.emit("update_pedestrian", { id: pedestrian.id, velocity: currentVelocity });
+        socket.emit("update_pedestrian", {
+          id: pedestrian.id,
+          velocity: PedestrianService.randomVelocity(),
+        });
         scheduleVelocityUpdate();
-      }, randomVelocityUpdateDelayMs());
+      }, PedestrianService.randomVelocityUpdateDelayMs());
 
       velocityUpdateTimeouts.set(pedestrian.id, timeoutId);
     };
@@ -63,7 +54,7 @@ io.on("connection", (socket) => {
         velocityUpdateTimeouts.delete(pedestrian.id);
       }
       socket.emit("remove_pedestrian", pedestrian.id);
-    }, randomRemovalDelayMs());
+    }, PedestrianService.randomRemovalDelayMs());
     removalTimeouts.push(timeoutId);
   }, 200);
 
