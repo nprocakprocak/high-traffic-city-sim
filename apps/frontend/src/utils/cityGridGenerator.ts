@@ -1,4 +1,4 @@
-import { CellType, CityCell } from '../types/cell';
+import { CellType, CityCell } from "../types/cell";
 
 const MIN_FOOTPRINT_SIZE = 4;
 const MAX_FOOTPRINT_SIZE = 8;
@@ -15,7 +15,10 @@ function randomIntInclusive(min: number, max: number): number {
 
 function createBaseGrid(rows: number, cols: number): CityCell[][] {
   return Array.from({ length: rows }, (_, row) =>
-    Array.from({ length: cols }, (_, col) => ({ type: 'park' as CellType, position: { x: col, y: row } }))
+    Array.from({ length: cols }, (_, col) => ({
+      type: "park" as CellType,
+      position: { x: col, y: row },
+    })),
   );
 }
 
@@ -32,7 +35,7 @@ function createBuildingFootprint(): CityCell[][] {
 
     for (let col = 0; col < width; col++) {
       const isBorder = isTopOrBottom || col === 0 || col === width - 1;
-      rowCells[col] = { type: isBorder ? 'road' : 'building', position: { x: col, y: row } };
+      rowCells[col] = { type: isBorder ? "road" : "building", position: { x: col, y: row } };
     }
 
     footprint[row] = rowCells;
@@ -41,7 +44,12 @@ function createBuildingFootprint(): CityCell[][] {
   return footprint;
 }
 
-function stampFootprint(grid: CityCell[][], footprint: CityCell[][], startRow: number, startCol: number): void {
+function stampFootprint(
+  grid: CityCell[][],
+  footprint: CityCell[][],
+  startRow: number,
+  startCol: number,
+): void {
   const footprintRows = footprint.length;
   const footprintCols = footprint[0].length;
 
@@ -62,7 +70,7 @@ function canPlaceWithoutOverlap(
   grid: CityCell[][],
   footprint: CityCell[][],
   startRow: number,
-  startCol: number
+  startCol: number,
 ): boolean {
   const footprintRows = footprint.length;
   const footprintCols = footprint[0].length;
@@ -71,9 +79,9 @@ function canPlaceWithoutOverlap(
     for (let col = 0; col < footprintCols; col++) {
       const targetCellType = grid[startRow + row][startCol + col].type;
       const footprintCellType = footprint[row][col].type;
-      const isRoadOnRoadOverlap = targetCellType === 'road' && footprintCellType === 'road';
+      const isRoadOnRoadOverlap = targetCellType === "road" && footprintCellType === "road";
 
-      if (targetCellType !== 'park' && !isRoadOnRoadOverlap) {
+      if (targetCellType !== "park" && !isRoadOnRoadOverlap) {
         return false;
       }
     }
@@ -86,7 +94,7 @@ function touchesExistingDevelopment(
   grid: CityCell[][],
   footprint: CityCell[][],
   startRow: number,
-  startCol: number
+  startCol: number,
 ): boolean {
   const gridRows = grid.length;
   const gridCols = grid[0].length;
@@ -104,7 +112,7 @@ function touchesExistingDevelopment(
         continue;
       }
 
-      if (grid[row][col].type !== 'park') {
+      if (grid[row][col].type !== "park") {
         return true;
       }
     }

@@ -1,6 +1,6 @@
-import { Pedestrian } from '@high-traffic-city-sim/types';
-import { memo, useEffect, useRef } from 'react';
-import { CITY_CELL_SIZE } from '../constants';
+import { Pedestrian } from "@high-traffic-city-sim/types";
+import { memo, useEffect, useRef } from "react";
+import { CITY_CELL_SIZE } from "../constants";
 
 interface PedestrianIconProps {
   pedestrian: Pedestrian;
@@ -67,6 +67,4 @@ function PedestrianIconComponent({ pedestrian, onFinish }: PedestrianIconProps) 
   );
 }
 
-export const PedestrianIcon = memo(
-  PedestrianIconComponent,
-);
+export const PedestrianIcon = memo(PedestrianIconComponent);

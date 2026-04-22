@@ -1,4 +1,4 @@
-export type CellType = 'road' | 'building' | 'park' | 'empty';
+export type CellType = "road" | "building" | "park" | "empty";
 
 export interface GridPosition {
   x: number;

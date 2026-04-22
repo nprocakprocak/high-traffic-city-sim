@@ -15,7 +15,10 @@ import { convertGridPathToPixelPoints, findPath } from "../utils/pathFinder";
 export default function HomePage() {
   const [cityGrid, setCityGrid] = useState<CityCell[][]>([]);
   const [roadPositions, setRoadPositions] = useState<GridPosition[]>([]);
-  const { pedestrians, pedestriansMap, updatePedestrian, error } = usePedestrians({ cityGrid, roadPositions });
+  const { pedestrians, pedestriansMap, updatePedestrian, error } = usePedestrians({
+    cityGrid,
+    roadPositions,
+  });
   const pedestriansMapRef = useRef(pedestriansMap);
 
   useEffect(() => {

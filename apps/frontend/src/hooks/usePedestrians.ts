@@ -14,29 +14,32 @@ export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps)
   const [pedestriansMap, setPedestriansMap] = useState<Map<string, Pedestrian>>(new Map());
   const pedestrians = useMemo(() => Array.from(pedestriansMap.values()), [pedestriansMap]);
 
-  const onNewPedestrian = useCallback((sockPedestrian: Pedestrian) => {
-    const startPosition = getRandomRoadPosition(roadPositions);
-    const destination = getRandomRoadPosition(roadPositions);
+  const onNewPedestrian = useCallback(
+    (sockPedestrian: Pedestrian) => {
+      const startPosition = getRandomRoadPosition(roadPositions);
+      const destination = getRandomRoadPosition(roadPositions);
 
-    if (!startPosition || !destination) {
-      return;
-    }
+      if (!startPosition || !destination) {
+        return;
+      }
 
-    const path = findPath(cityGrid, startPosition, destination);
-    const pathPoints = convertGridPathToPixelPoints(path);
+      const path = findPath(cityGrid, startPosition, destination);
+      const pathPoints = convertGridPathToPixelPoints(path);
 
-    const pedestrian: Pedestrian = {
-      ...sockPedestrian,
-      pathPoints,
-      destination,
-    };
+      const pedestrian: Pedestrian = {
+        ...sockPedestrian,
+        pathPoints,
+        destination,
+      };
 
-    setPedestriansMap((prev) => {
-      const map = new Map(prev);
-      map.set(pedestrian.id, pedestrian);
-      return map;
-    });
-  }, [cityGrid, roadPositions]);
+      setPedestriansMap((prev) => {
+        const map = new Map(prev);
+        map.set(pedestrian.id, pedestrian);
+        return map;
+      });
+    },
+    [cityGrid, roadPositions],
+  );
 
   const removePedestrian = useCallback((id: string) => {
     setPedestriansMap((prev) => {
@@ -46,19 +49,16 @@ export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps)
     });
   }, []);
 
-  const updatePedestrian = useCallback(
-    (id: string, updates: Partial<Omit<Pedestrian, "id">>) => {
-      setPedestriansMap((prev) => {
-        const map = new Map(prev);
-        const p = map.get(id);
-        if (p) {
-          map.set(id, { ...p, ...updates });
-        }
-        return map;
-      });
-    },
-    [],
-  );
+  const updatePedestrian = useCallback((id: string, updates: Partial<Omit<Pedestrian, "id">>) => {
+    setPedestriansMap((prev) => {
+      const map = new Map(prev);
+      const p = map.get(id);
+      if (p) {
+        map.set(id, { ...p, ...updates });
+      }
+      return map;
+    });
+  }, []);
 
   const { error } = useWebSocket(onNewPedestrian, removePedestrian);
 

@@ -60,6 +60,6 @@ export function useWebSocket(
 
   return {
     error,
-    isConnected
+    isConnected,
   };
 }

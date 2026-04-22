@@ -15,15 +15,18 @@ export function CityMap({ cityGrid, pedestrians, onPedestrianStop }: CityMapProp
   const rows = cityGrid.length;
   const cols = cityGrid[0]?.length ?? 0;
 
-  const renderCell = useCallback((position: GridPosition) => {
-    return (
-      <GridCell
-        isLastRow={position.y === rows - 1}
-        isLastColumn={position.x === cols - 1}
-        type={cityGrid[position.y][position.x].type}
-      />
-    );
-  }, [cityGrid, rows, cols]);
+  const renderCell = useCallback(
+    (position: GridPosition) => {
+      return (
+        <GridCell
+          isLastRow={position.y === rows - 1}
+          isLastColumn={position.x === cols - 1}
+          type={cityGrid[position.y][position.x].type}
+        />
+      );
+    },
+    [cityGrid, rows, cols],
+  );
 
   return (
     <div className="relative grid">

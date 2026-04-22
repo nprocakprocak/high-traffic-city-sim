@@ -1,7 +1,11 @@
 import { CITY_CELL_SIZE } from "../constants";
 import { CityCell, GridPosition } from "../types/cell";
 
-export function findPath(cityGrid: CityCell[][], from: GridPosition, to: GridPosition): GridPosition[] {
+export function findPath(
+  cityGrid: CityCell[][],
+  from: GridPosition,
+  to: GridPosition,
+): GridPosition[] {
   const height = cityGrid.length;
   if (height === 0) return [];
 
