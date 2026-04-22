@@ -22,7 +22,7 @@ export default function HomePage() {
     pedestriansMapRef.current = pedestriansMap;
   }, [pedestriansMap]);
 
-  const newDestiny = useCallback(
+  const newDestination = useCallback(
     (id: string) => {
       if (cityGrid.length === 0 || roadPositions.length === 0) {
         return;
@@ -52,7 +52,7 @@ export default function HomePage() {
     <main className="p-6 max-w-4xl mx-auto">
       <ErrorDisplay error={error} />
       <PedestrianStats totalPedestrians={pedestrians.length} />
-      <CityMap cityGrid={cityGrid} pedestrians={pedestrians} onPedestrianStop={newDestiny} />
+      <CityMap cityGrid={cityGrid} pedestrians={pedestrians} onPedestrianStop={newDestination} />
       <PedestrianList pedestrians={pedestrians} />
     </main>
   );
