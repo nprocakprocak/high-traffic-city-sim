@@ -7,13 +7,28 @@ interface PedestrianIconProps {
   onFinish: (id: string) => void;
 }
 
+function velocityToPlaybackRate(velocity: number): number {
+  // Keep a conservative range to avoid jarring speed jumps.
+  return Math.min(2, Math.max(0.5, velocity / 5));
+}
+
 function PedestrianIconComponent({ pedestrian, onFinish }: PedestrianIconProps) {
   const iconRef = useRef<HTMLDivElement | null>(null);
   const onFinishRef = useRef(onFinish);
+  const animationRef = useRef<Animation | null>(null);
+  const playbackRateRef = useRef(velocityToPlaybackRate(pedestrian.velocity));
 
   useEffect(() => {
     onFinishRef.current = onFinish;
   }, [onFinish]);
+
+  useEffect(() => {
+    const animation = animationRef.current;
+    const playbackRate = velocityToPlaybackRate(pedestrian.velocity);
+    playbackRateRef.current = playbackRate;
+    if (!animation) return;
+    animation.playbackRate = playbackRate;
+  }, [pedestrian.velocity]);
 
   useEffect(() => {
     const element = iconRef.current;
@@ -31,7 +46,7 @@ function PedestrianIconComponent({ pedestrian, onFinish }: PedestrianIconProps) 
       return;
     }
 
-    const segmentDuration = Math.max(80, 260 - pedestrian.velocity * 15);
+    const segmentDuration = 180;
     const totalDuration = rest.length * segmentDuration;
     const keyframes = points.map((point) => ({
       transform: `translate3d(${point.x - CITY_CELL_SIZE / 2}px, ${point.y - CITY_CELL_SIZE / 2}px, 0)`,
@@ -42,13 +57,19 @@ function PedestrianIconComponent({ pedestrian, onFinish }: PedestrianIconProps) 
       easing: "linear",
       fill: "forwards",
     });
+    animation.playbackRate = playbackRateRef.current;
+    animationRef.current = animation;
 
     animation.onfinish = () => {
+      animationRef.current = null;
       onFinishRef.current(pedestrian.id);
     };
 
     return () => {
       animation.cancel();
+      if (animationRef.current === animation) {
+        animationRef.current = null;
+      }
     };
   }, [pedestrian.id, pedestrian.pathPoints]);
 
