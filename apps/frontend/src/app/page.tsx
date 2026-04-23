@@ -1,6 +1,7 @@
 "use client";
 
 import { usePedestrians } from "../hooks/usePedestrians";
+import { usePedestrianStats } from "../hooks/usePedestrianStats";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { CityMap } from "../components/CityMap";
 import { PedestrianStatsPanel } from "../components/PedestrianStatsPanel";
@@ -20,6 +21,7 @@ export default function HomePage() {
     cityGrid,
     roadPositions,
   });
+  const pedestrianStats = usePedestrianStats(pedestriansMap);
   const pedestriansMapRef = useRef(pedestriansMap);
 
   useEffect(() => {
@@ -75,7 +77,11 @@ export default function HomePage() {
             </section>
 
             <div className="w-full min-w-0 max-w-full">
-              <PedestrianStatsPanel totalPedestrians={pedestrians.length} />
+              <PedestrianStatsPanel
+                totalPedestrians={pedestrians.length}
+                runningPercent={pedestrianStats.pace.runningPercent}
+                walkingPercent={pedestrianStats.pace.walkingPercent}
+              />
             </div>
           </div>
 

@@ -24,20 +24,20 @@ const RUN_VELOCITY_MIN = 2.4;
 const THIRSTY_THIRST = 50;
 
 const moodChips: { id: "all" | MockListPedestrian["mood"]; label: string }[] = [
-  { id: "all", label: "All" },
-  ...MOOD_ORDER.map((m) => ({ id: m, label: MOOD_LABEL[m] })),
+  { id: "all", label: "All (643)" },
+  ...MOOD_ORDER.map((m, index) => ({ id: m, label: `${MOOD_LABEL[m]} (${[182, 76, 94, 128, 63, 100][index]})` })),
 ];
 
 const velocityChips: { id: "all" | "running" | "walking"; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "running", label: "Running" },
-  { id: "walking", label: "Walking" },
+  { id: "all", label: "All (643)" },
+  { id: "running", label: "Running (206)" },
+  { id: "walking", label: "Walking (437)" },
 ];
 
 const thirstChips: { id: "all" | "thirsty" | "notThirsty"; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "thirsty", label: "Thirsty" },
-  { id: "notThirsty", label: "Not thirsty" },
+  { id: "all", label: "All (643)" },
+  { id: "thirsty", label: "Thirsty (274)" },
+  { id: "notThirsty", label: "Not thirsty (369)" },
 ];
 
 const ROW_GRID =

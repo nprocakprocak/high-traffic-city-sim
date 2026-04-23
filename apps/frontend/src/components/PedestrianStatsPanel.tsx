@@ -3,6 +3,8 @@ import { Pedestrian } from "@high-traffic-city-sim/types";
 
 interface PedestrianStatsPanelProps {
   totalPedestrians: number;
+  runningPercent: number;
+  walkingPercent: number;
 }
 
 const MOOD_COLORS: Record<Pedestrian["mood"], string> = {
@@ -23,15 +25,10 @@ const MOCK_MOOD_PERCENTS: { mood: Pedestrian["mood"]; percent: number }[] = [
   { mood: "shocked", percent: 15 },
 ];
 
-const MOCK_PACE_SEGMENTS: {
-  id: "running" | "walking";
-  label: string;
-  percent: number;
-  color: string;
-}[] = [
-  { id: "running", label: "Running", percent: 32, color: "#4a9ed4" },
-  { id: "walking", label: "Walking", percent: 68, color: "#52c28c" },
-];
+const PACE_SEGMENT_COLORS = {
+  running: "#4a9ed4",
+  walking: "#52c28c",
+} as const;
 
 function moodLabel(mood: Pedestrian["mood"]): string {
   const labels: Record<Pedestrian["mood"], string> = {
@@ -45,7 +42,11 @@ function moodLabel(mood: Pedestrian["mood"]): string {
   return labels[mood];
 }
 
-export function PedestrianStatsPanel({ totalPedestrians }: PedestrianStatsPanelProps) {
+export function PedestrianStatsPanel({
+  totalPedestrians,
+  runningPercent,
+  walkingPercent,
+}: PedestrianStatsPanelProps) {
   const [spawnPerSecond, setSpawnPerSecond] = useState(5);
 
   const pieBackground = useMemo(() => {
@@ -58,6 +59,14 @@ export function PedestrianStatsPanel({ totalPedestrians }: PedestrianStatsPanelP
     }
     return `conic-gradient(${stops.join(", ")})`;
   }, []);
+
+  const paceSegments = useMemo(
+    () => [
+      { id: "running" as const, label: "Running", percent: runningPercent, color: PACE_SEGMENT_COLORS.running },
+      { id: "walking" as const, label: "Walking", percent: walkingPercent, color: PACE_SEGMENT_COLORS.walking },
+    ],
+    [runningPercent, walkingPercent],
+  );
 
   return (
     <div
@@ -126,13 +135,13 @@ export function PedestrianStatsPanel({ totalPedestrians }: PedestrianStatsPanelP
           </div>
 
           <div>
-            <p className="mb-2 text-xs text-gray-500">Pace: running vs walking (mock data)</p>
+            <p className="mb-2 text-xs text-gray-500">Pace: running vs walking (live data)</p>
             <div
               className="flex h-4 w-full overflow-hidden rounded-md border border-stone-200/80 bg-stone-100/80"
               role="img"
-              aria-label="Pace: running versus walking, percentage share, mocked"
+              aria-label="Pace: running versus walking, percentage share"
             >
-              {MOCK_PACE_SEGMENTS.map((seg) => (
+              {paceSegments.map((seg) => (
                 <div
                   key={seg.id}
                   className="h-full min-w-0 transition-[flex-basis] duration-300"
@@ -145,7 +154,7 @@ export function PedestrianStatsPanel({ totalPedestrians }: PedestrianStatsPanelP
               ))}
             </div>
             <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600">
-              {MOCK_PACE_SEGMENTS.map((seg) => (
+              {paceSegments.map((seg) => (
                 <li key={seg.id} className="flex items-center gap-1.5">
                   <span
                     className="h-2.5 w-2.5 shrink-0 rounded-sm border border-stone-200/60"

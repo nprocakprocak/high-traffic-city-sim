@@ -23,7 +23,10 @@ export class PedestrianService {
   }
 
   static randomVelocity(): number {
-    return Math.floor(Math.random() * 10) + 1; // 1-10
+    const lowRange = [2, 3, 4];
+    const highRange = [7, 8, 9, 10];
+    const selectedRange = Math.random() < 0.7 ? lowRange : highRange;
+    return selectedRange[Math.floor(Math.random() * selectedRange.length)];
   }
 
   static randomRemovalDelayMs(): number {
