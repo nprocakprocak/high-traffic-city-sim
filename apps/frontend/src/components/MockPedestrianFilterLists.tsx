@@ -23,12 +23,6 @@ const MOOD_ORDER: MockListPedestrian["mood"][] = [
 const RUN_VELOCITY_MIN = 2.4;
 const THIRSTY_THIRST = 50;
 
-const thirstChips: { id: "all" | "thirsty" | "notThirsty"; label: string }[] = [
-  { id: "all", label: "All (643)" },
-  { id: "thirsty", label: "Thirsty (274)" },
-  { id: "notThirsty", label: "Not thirsty (369)" },
-];
-
 const ROW_GRID =
   "grid grid-cols-[2.25rem_minmax(0,8.5rem)_minmax(0,6.25rem)_minmax(0,5.25rem)_minmax(0,6.5rem)] items-center gap-2 px-2.5";
 
@@ -145,6 +139,10 @@ interface MockPedestrianFilterListsProps {
     scaredCount: number;
     shockedCount: number;
   };
+  thirstCounters: {
+    thirstyCount: number;
+    notThirstyCount: number;
+  };
 }
 
 function getMoodCount(mood: MockListPedestrian["mood"], moodCounters: MockPedestrianFilterListsProps["moodCounters"]): number {
@@ -164,7 +162,12 @@ function getMoodCount(mood: MockListPedestrian["mood"], moodCounters: MockPedest
   }
 }
 
-export function MockPedestrianFilterLists({ totalCount, paceCounters, moodCounters }: MockPedestrianFilterListsProps) {
+export function MockPedestrianFilterLists({
+  totalCount,
+  paceCounters,
+  moodCounters,
+  thirstCounters,
+}: MockPedestrianFilterListsProps) {
   const moodChips: { id: "all" | MockListPedestrian["mood"]; label: string }[] = [
     { id: "all", label: `All (${totalCount})` },
     ...MOOD_ORDER.map((m) => ({ id: m, label: `${MOOD_LABEL[m]} (${getMoodCount(m, moodCounters)})` })),
@@ -174,6 +177,11 @@ export function MockPedestrianFilterLists({ totalCount, paceCounters, moodCounte
     { id: "all", label: `All (${totalCount})` },
     { id: "running", label: `Running (${paceCounters.runningCount})` },
     { id: "walking", label: `Walking (${paceCounters.walkingCount})` },
+  ];
+  const thirstChips: { id: "all" | "thirsty" | "notThirsty"; label: string }[] = [
+    { id: "all", label: `All (${totalCount})` },
+    { id: "thirsty", label: `Thirsty (${thirstCounters.thirstyCount})` },
+    { id: "notThirsty", label: `Not thirsty (${thirstCounters.notThirstyCount})` },
   ];
 
   return (

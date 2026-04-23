@@ -95,6 +95,7 @@ export default function HomePage() {
                 totalCount={pedestrianStats.totalCount}
                 paceCounters={pedestrianStats.pace}
                 moodCounters={pedestrianStats.mood}
+                thirstCounters={pedestrianStats.thirst}
               />
             </div>
           </section>
