@@ -17,6 +17,17 @@ const io = new Server(httpServer, {
   }
 });
 
+const DEFAULT_SPAWN_MULT = 8;
+const SPAWN_BASE_MS = 100;
+
+const clampSpawnMult = (value: unknown): number => {
+  const n = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(n)) {
+    return DEFAULT_SPAWN_MULT;
+  }
+  return Math.min(10, Math.max(1, Math.trunc(n)));
+};
+
 io.on("connection", (socket) => {
   console.log(`Client connected: ${socket.id}`);
 
@@ -24,7 +35,10 @@ io.on("connection", (socket) => {
   const updateTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
   const activePedestrians = new Set<string>();
 
-  const intervalId = setInterval(() => {
+  let spawnIntervalMs = SPAWN_BASE_MS * DEFAULT_SPAWN_MULT;
+  let intervalId: ReturnType<typeof setInterval> | undefined;
+
+  const emitOnePedestrian = () => {
     const pedestrian = PedestrianService.generateRandomPedestrian();
     socket.emit("pedestrian", pedestrian);
     activePedestrians.add(pedestrian.id);
@@ -59,11 +73,27 @@ io.on("connection", (socket) => {
       socket.emit("remove_pedestrian", pedestrian.id);
     }, PedestrianService.randomRemovalDelayMs());
     removalTimeouts.push(timeoutId);
-  }, 200);
+  };
+
+  const scheduleSpawnInterval = () => {
+    if (intervalId !== undefined) {
+      clearInterval(intervalId);
+    }
+    intervalId = setInterval(emitOnePedestrian, spawnIntervalMs);
+  };
+
+  scheduleSpawnInterval();
+
+  socket.on("set_spawn_interval_mult", (value: unknown) => {
+    spawnIntervalMs = SPAWN_BASE_MS * clampSpawnMult(value);
+    scheduleSpawnInterval();
+  });
 
   socket.on("disconnect", () => {
     console.log(`Client disconnected: ${socket.id}`);
-    clearInterval(intervalId);
+    if (intervalId !== undefined) {
+      clearInterval(intervalId);
+    }
     for (const timeoutId of removalTimeouts) {
       clearTimeout(timeoutId);
     }
