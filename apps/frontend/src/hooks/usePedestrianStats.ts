@@ -5,8 +5,9 @@ const RUNNING_VELOCITY_THRESHOLD = 5;
 
 export interface PedestrianStats {
   pace: {
-    runningPercent: number;
-    walkingPercent: number;
+    totalCount: number;
+    runningCount: number;
+    walkingCount: number;
   };
 }
 
@@ -16,8 +17,9 @@ export function usePedestrianStats(pedestriansMap: Map<string, Pedestrian>): Ped
     if (total === 0) {
       return {
         pace: {
-          runningPercent: 0,
-          walkingPercent: 0,
+          totalCount: 0,
+          runningCount: 0,
+          walkingCount: 0,
         },
       };
     }
@@ -30,12 +32,11 @@ export function usePedestrianStats(pedestriansMap: Map<string, Pedestrian>): Ped
       }
     }
 
-    const runningPercent = Math.round((runningCount / total) * 100);
-
     return {
       pace: {
-        runningPercent,
-        walkingPercent: 100 - runningPercent,
+        totalCount: total,
+        runningCount,
+        walkingCount: total - runningCount,
       },
     };
   }, [pedestriansMap]);

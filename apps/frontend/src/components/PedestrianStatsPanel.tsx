@@ -3,8 +3,8 @@ import { Pedestrian } from "@high-traffic-city-sim/types";
 
 interface PedestrianStatsPanelProps {
   totalPedestrians: number;
-  runningPercent: number;
-  walkingPercent: number;
+  runningCount: number;
+  walkingCount: number;
 }
 
 const MOOD_COLORS: Record<Pedestrian["mood"], string> = {
@@ -44,8 +44,8 @@ function moodLabel(mood: Pedestrian["mood"]): string {
 
 export function PedestrianStatsPanel({
   totalPedestrians,
-  runningPercent,
-  walkingPercent,
+  runningCount,
+  walkingCount,
 }: PedestrianStatsPanelProps) {
   const [spawnPerSecond, setSpawnPerSecond] = useState(5);
 
@@ -60,12 +60,39 @@ export function PedestrianStatsPanel({
     return `conic-gradient(${stops.join(", ")})`;
   }, []);
 
+  const pacePercentages = useMemo(() => {
+    const paceTotal = runningCount + walkingCount;
+    if (paceTotal === 0) {
+      return {
+        runningPercent: 0,
+        walkingPercent: 0,
+      };
+    }
+
+    const runningPercent = Math.round((runningCount / paceTotal) * 100);
+
+    return {
+      runningPercent,
+      walkingPercent: 100 - runningPercent,
+    };
+  }, [runningCount, walkingCount]);
+
   const paceSegments = useMemo(
     () => [
-      { id: "running" as const, label: "Running", percent: runningPercent, color: PACE_SEGMENT_COLORS.running },
-      { id: "walking" as const, label: "Walking", percent: walkingPercent, color: PACE_SEGMENT_COLORS.walking },
+      {
+        id: "running" as const,
+        label: "Running",
+        percent: pacePercentages.runningPercent,
+        color: PACE_SEGMENT_COLORS.running,
+      },
+      {
+        id: "walking" as const,
+        label: "Walking",
+        percent: pacePercentages.walkingPercent,
+        color: PACE_SEGMENT_COLORS.walking,
+      },
     ],
-    [runningPercent, walkingPercent],
+    [pacePercentages.runningPercent, pacePercentages.walkingPercent],
   );
 
   return (

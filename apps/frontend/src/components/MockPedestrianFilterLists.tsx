@@ -28,12 +28,6 @@ const moodChips: { id: "all" | MockListPedestrian["mood"]; label: string }[] = [
   ...MOOD_ORDER.map((m, index) => ({ id: m, label: `${MOOD_LABEL[m]} (${[182, 76, 94, 128, 63, 100][index]})` })),
 ];
 
-const velocityChips: { id: "all" | "running" | "walking"; label: string }[] = [
-  { id: "all", label: "All (643)" },
-  { id: "running", label: "Running (206)" },
-  { id: "walking", label: "Walking (437)" },
-];
-
 const thirstChips: { id: "all" | "thirsty" | "notThirsty"; label: string }[] = [
   { id: "all", label: "All (643)" },
   { id: "thirsty", label: "Thirsty (274)" },
@@ -142,7 +136,21 @@ function ListBlock({
   );
 }
 
-export function MockPedestrianFilterLists() {
+interface MockPedestrianFilterListsProps {
+  paceCounters: {
+    totalCount: number;
+    runningCount: number;
+    walkingCount: number;
+  };
+}
+
+export function MockPedestrianFilterLists({ paceCounters }: MockPedestrianFilterListsProps) {
+  const velocityChips: { id: "all" | "running" | "walking"; label: string }[] = [
+    { id: "all", label: `All (${paceCounters.totalCount})` },
+    { id: "running", label: `Running (${paceCounters.runningCount})` },
+    { id: "walking", label: `Walking (${paceCounters.walkingCount})` },
+  ];
+
   return (
     <div className="flex w-full min-w-0 flex-col gap-4">
       <ListBlock
