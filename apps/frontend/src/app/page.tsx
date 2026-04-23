@@ -80,7 +80,7 @@ export default function HomePage() {
           </div>
 
           <section
-            className="flex h-[min(72vh,800px)] w-full min-w-0 min-h-96 flex-col overflow-hidden rounded-lg border border-stone-200/80 bg-stone-50/40 p-3 text-sm text-stone-700 shadow-sm"
+            className="flex w-full min-w-0 flex-col rounded-lg border border-stone-200/80 bg-stone-50/40 p-3 text-sm text-stone-700 shadow-sm"
             aria-label="Pedestrian lists"
           >
             <div className="min-h-0 w-full min-w-0 flex-1">

@@ -45,9 +45,12 @@ export function useWebSocket(
       onRemovePedestrianRef.current(id);
     });
 
-    newSocket.on("update_pedestrian", ({ id, ...updates }: { id: string } & Partial<Omit<Pedestrian, "id">>) => {
-      onUpdatePedestrianRef.current(id, updates);
-    });
+    newSocket.on(
+      "update_pedestrian",
+      ({ id, ...updates }: { id: string } & Partial<Omit<Pedestrian, "id">>) => {
+        onUpdatePedestrianRef.current(id, updates);
+      },
+    );
 
     newSocket.on("connect_error", (err) => {
       // In development StrictMode, mount/unmount cycles can briefly close a pending

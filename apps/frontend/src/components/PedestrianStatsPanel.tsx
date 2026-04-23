@@ -23,7 +23,12 @@ const MOCK_MOOD_PERCENTS: { mood: Pedestrian["mood"]; percent: number }[] = [
   { mood: "shocked", percent: 15 },
 ];
 
-const MOCK_PACE_SEGMENTS: { id: "running" | "walking"; label: string; percent: number; color: string }[] = [
+const MOCK_PACE_SEGMENTS: {
+  id: "running" | "walking";
+  label: string;
+  percent: number;
+  color: string;
+}[] = [
   { id: "running", label: "Running", percent: 32, color: "#4a9ed4" },
   { id: "walking", label: "Walking", percent: 68, color: "#52c28c" },
 ];

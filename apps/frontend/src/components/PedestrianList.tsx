@@ -14,7 +14,11 @@ export function PedestrianList({ pedestrians }: PedestrianListProps) {
           Show all pedestrians ({pedestrians.length})
         </summary>
         <pre className="bg-gray-100 p-3 rounded mt-2 max-h-80 overflow-auto text-xs border border-gray-300">
-          {JSON.stringify(pedestrians.map(({ name, velocity }) => ({ name, velocity })).slice(-20), null, 2)}
+          {JSON.stringify(
+            pedestrians.map(({ name, velocity }) => ({ name, velocity })).slice(-20),
+            null,
+            2,
+          )}
         </pre>
       </details>
     </div>
