@@ -2,15 +2,15 @@
 
 import { usePedestrians } from "../hooks/usePedestrians";
 import { ErrorDisplay } from "../components/ErrorDisplay";
-import { PedestrianStats } from "../components/PedestrianStats";
-import { PedestrianList } from "../components/PedestrianList";
 import { CityMap } from "../components/CityMap";
+import { PedestrianStatsPanel } from "../components/PedestrianStatsPanel";
 import { generateCityGrid } from "../utils/cityGridGenerator";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { extractRoadPositions, getRandomRoadPosition } from "../utils/cityRoads";
 import { CityCell } from "../types/cell";
 import { GridPosition } from "../types/cell";
 import { convertGridPathToPixelPoints, findPath } from "../utils/pathFinder";
+import { CITY_CELL_SIZE, CITY_GRID_COLS, CITY_GRID_ROWS } from "../constants";
 
 export default function HomePage() {
   const [cityGrid, setCityGrid] = useState<CityCell[][]>([]);
@@ -46,17 +46,46 @@ export default function HomePage() {
   );
 
   useEffect(() => {
-    const cityGrid = generateCityGrid(45, 60);
+    const cityGrid = generateCityGrid(CITY_GRID_ROWS, CITY_GRID_COLS);
     setCityGrid(cityGrid);
     setRoadPositions(extractRoadPositions(cityGrid));
   }, []);
 
   return (
-    <main className="p-6 max-w-4xl mx-auto">
+    <main className="min-h-screen p-6">
       <ErrorDisplay error={error} />
-      <PedestrianStats totalPedestrians={pedestrians.length} />
-      <CityMap cityGrid={cityGrid} pedestrians={pedestrians} onPedestrianStop={newDestination} />
-      <PedestrianList pedestrians={pedestrians} />
+
+      <div className="mx-auto max-w-[1920px]">
+        <div
+          className="grid min-w-0 grid-cols-1 items-start gap-4 xl:grid-cols-[var(--map-col)_minmax(0,1fr)]"
+          style={
+            {
+              ["--map-col" as string]: `min(100%, ${CITY_GRID_COLS * CITY_CELL_SIZE}px)`,
+            } as CSSProperties
+          }
+        >
+          <div className="flex min-w-0 w-full max-w-full flex-col gap-4">
+            <section className="w-fit max-w-full" aria-label="City map">
+              <CityMap
+                cityGrid={cityGrid}
+                pedestrians={pedestrians}
+                onPedestrianStop={newDestination}
+              />
+            </section>
+
+            <div className="w-full min-w-0 max-w-full">
+              <PedestrianStatsPanel totalPedestrians={pedestrians.length} />
+            </div>
+          </div>
+
+          <section
+            className="flex min-h-[min(60vh,720px)] min-w-0 w-full flex-col rounded-lg border border-dashed border-gray-300 bg-gray-50/50 p-4 text-sm text-gray-500 xl:min-h-0"
+            aria-label="Pedestrian lists"
+          >
+            Filterable pedestrian lists go here
+          </section>
+        </div>
+      </div>
     </main>
   );
 }
