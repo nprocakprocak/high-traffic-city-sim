@@ -86,11 +86,13 @@ function PedestrianIconComponent({ pedestrian, onFinish }: PedestrianIconProps) 
     <div
       ref={iconRef}
       style={{
-        width: CITY_CELL_SIZE + "px",
-        height: CITY_CELL_SIZE + "px",
+        width: `${CITY_CELL_SIZE}px`,
+        height: `${CITY_CELL_SIZE}px`,
+        fontSize: `${CITY_CELL_SIZE}px`,
+        lineHeight: `${CITY_CELL_SIZE}px`,
         willChange: "transform",
       }}
-      className="absolute left-0 top-0 flex items-center justify-center text-[10px] leading-[10px] cursor-default"
+      className="absolute left-0 top-0 flex items-center justify-center cursor-default"
     >
       {moodEmojiMap[pedestrian.mood]}
     </div>

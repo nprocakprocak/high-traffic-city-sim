@@ -1,1 +1,1 @@
-export const CITY_CELL_SIZE = 10;
+export const CITY_CELL_SIZE = 15;

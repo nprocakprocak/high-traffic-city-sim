@@ -27,12 +27,12 @@ export class PedestrianService {
   }
 
   static randomRemovalDelayMs(): number {
-    const seconds = 5 + Math.floor(Math.random() * 16); // 5-20
+    const seconds = 30 + Math.floor(Math.random() * 271); // 30-300 seconds
     return seconds * 1000;
   }
 
   static randomVelocityUpdateDelayMs(): number {
-    const seconds = 2 + Math.floor(Math.random() * 5); // 2-6
+    const seconds = 2 + Math.floor(Math.random() * 5); // 2-6 seconds
     return seconds * 1000;
   }
 

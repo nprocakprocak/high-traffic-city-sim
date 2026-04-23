@@ -46,7 +46,7 @@ export default function HomePage() {
   );
 
   useEffect(() => {
-    const cityGrid = generateCityGrid(60, 80);
+    const cityGrid = generateCityGrid(45, 60);
     setCityGrid(cityGrid);
     setRoadPositions(extractRoadPositions(cityGrid));
   }, []);
