@@ -25,7 +25,9 @@ export function PedestrianListTableSection({ pedestrians }: PedestrianListTableS
       </div>
       {pedestrians.length === 0 ? (
         <ul className="list-none rounded-b-md pb-1" aria-label="Pedestrians list items">
-          <li className="px-3 py-4 text-sm text-stone-500">No pedestrians yet. Waiting for live updates.</li>
+          <li className="px-3 py-4 text-sm text-stone-500">
+            No pedestrians yet. Waiting for live updates.
+          </li>
         </ul>
       ) : (
         <List<PedestrianRowListProps, "ul">

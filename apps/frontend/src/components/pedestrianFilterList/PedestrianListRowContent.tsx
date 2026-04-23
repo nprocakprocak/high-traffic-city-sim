@@ -17,7 +17,9 @@ export function PedestrianListRowContent({ pedestrian }: PedestrianListRowConten
         {MOOD_EMOJI_MAP[pedestrian.mood]}
       </span>
       <span className="min-w-0 truncate text-left text-gray-800">{pedestrian.name}</span>
-      <span className="min-w-0 truncate text-left text-gray-600">{MOOD_LABEL[pedestrian.mood]}</span>
+      <span className="min-w-0 truncate text-left text-gray-600">
+        {MOOD_LABEL[pedestrian.mood]}
+      </span>
       <span className="min-w-0 text-left text-gray-600">{paceLabel(pedestrian.velocity)}</span>
       <span className="min-w-0 text-left text-gray-600">
         {isThirsty(pedestrian.thirst) ? "Thirsty" : "Not thirsty"}

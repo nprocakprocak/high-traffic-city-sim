@@ -46,7 +46,10 @@ function moodLabel(mood: Pedestrian["mood"]): string {
   return labels[mood];
 }
 
-function moodCount(mood: Pedestrian["mood"], moodCounters: PedestrianStatsPanelProps["moodCounters"]): number {
+function moodCount(
+  mood: Pedestrian["mood"],
+  moodCounters: PedestrianStatsPanelProps["moodCounters"],
+): number {
   switch (mood) {
     case "happy":
       return moodCounters.happyCount;
@@ -63,7 +66,12 @@ function moodCount(mood: Pedestrian["mood"], moodCounters: PedestrianStatsPanelP
   }
 }
 
-function polarToCartesian(centerX: number, centerY: number, radius: number, angleInDegrees: number) {
+function polarToCartesian(
+  centerX: number,
+  centerY: number,
+  radius: number,
+  angleInDegrees: number,
+) {
   const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180;
   return {
     x: centerX + radius * Math.cos(angleInRadians),
