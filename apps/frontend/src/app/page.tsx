@@ -4,6 +4,7 @@ import { usePedestrians } from "../hooks/usePedestrians";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { CityMap } from "../components/CityMap";
 import { PedestrianStatsPanel } from "../components/PedestrianStatsPanel";
+import { MockPedestrianFilterLists } from "../components/MockPedestrianFilterLists";
 import { generateCityGrid } from "../utils/cityGridGenerator";
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { extractRoadPositions, getRandomRoadPosition } from "../utils/cityRoads";
@@ -79,10 +80,12 @@ export default function HomePage() {
           </div>
 
           <section
-            className="flex min-h-[min(60vh,720px)] min-w-0 w-full flex-col rounded-lg border border-dashed border-gray-300 bg-gray-50/50 p-4 text-sm text-gray-500 xl:min-h-0"
+            className="flex h-[min(72vh,800px)] w-full min-w-0 min-h-96 flex-col overflow-hidden rounded-lg border border-stone-200/80 bg-stone-50/40 p-3 text-sm text-stone-700 shadow-sm"
             aria-label="Pedestrian lists"
           >
-            Filterable pedestrian lists go here
+            <div className="min-h-0 w-full min-w-0 flex-1">
+              <MockPedestrianFilterLists />
+            </div>
           </section>
         </div>
       </div>

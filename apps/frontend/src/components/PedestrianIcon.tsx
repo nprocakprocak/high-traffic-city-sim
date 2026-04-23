@@ -1,20 +1,11 @@
 import { Pedestrian } from "@high-traffic-city-sim/types";
 import { memo, useEffect, useRef } from "react";
-import { CITY_CELL_SIZE } from "../constants";
+import { CITY_CELL_SIZE, MOOD_EMOJI_MAP } from "../constants";
 
 interface PedestrianIconProps {
   pedestrian: Pedestrian;
   onFinish: (id: string) => void;
 }
-
-const moodEmojiMap: Record<Pedestrian["mood"], string> = {
-  happy: "🙂",
-  sad: "😢",
-  angry: "😡",
-  excited: "🤩",
-  scared: "😨",
-  shocked: "😵‍💫",
-};
 
 function velocityToPlaybackRate(velocity: number): number {
   // Keep a conservative range to avoid jarring speed jumps.
@@ -94,7 +85,7 @@ function PedestrianIconComponent({ pedestrian, onFinish }: PedestrianIconProps) 
       }}
       className="absolute left-0 top-0 flex items-center justify-center cursor-default"
     >
-      {moodEmojiMap[pedestrian.mood]}
+      {MOOD_EMOJI_MAP[pedestrian.mood]}
     </div>
   );
 }

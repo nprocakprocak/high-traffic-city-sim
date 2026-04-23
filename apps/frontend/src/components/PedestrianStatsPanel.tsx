@@ -83,7 +83,7 @@ export function PedestrianStatsPanel({ totalPedestrians }: PedestrianStatsPanelP
               aria-valuenow={spawnPerSecond}
             />
             <p className="text-xs leading-relaxed text-gray-500">
-              Pedestrian state is updated live over WebSocket.
+              Pedestrians are updated live over WebSocket.
             </p>
           </div>
         </div>
