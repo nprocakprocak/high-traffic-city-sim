@@ -1,4 +1,6 @@
 import type { Pedestrian } from "@high-traffic-city-sim/types";
+import type { CSSProperties } from "react";
+import { List } from "react-window";
 import { MOOD_EMOJI_MAP } from "../constants";
 
 const MOOD_LABEL: Record<Pedestrian["mood"], string> = {
@@ -13,6 +15,9 @@ const MOOD_LABEL: Record<Pedestrian["mood"], string> = {
 const MOOD_ORDER: Pedestrian["mood"][] = ["happy", "sad", "angry", "excited", "scared", "shocked"];
 const RUNNING_VELOCITY_THRESHOLD = 5;
 const THIRSTY_THRESHOLD = 4;
+const LIST_HEIGHT = 544;
+const ROW_HEIGHT = 40;
+const OVERSCAN_COUNT = 6;
 
 const ROW_GRID =
   "grid grid-cols-[2.25rem_minmax(0,8.5rem)_minmax(0,6.25rem)_minmax(0,5.25rem)_minmax(0,6.5rem)] items-center gap-2 px-2.5";
@@ -101,7 +106,7 @@ function FilterChips({
 
 function PedestrianRowItem({ pedestrian }: { pedestrian: Pedestrian }) {
   return (
-    <li className={`${ROW_GRID} border-b border-stone-200/60 py-1 text-sm last:border-0`}>
+    <div className={`${ROW_GRID} border-b border-stone-200/60 py-1 text-sm last:border-0`}>
       <span
         className="flex h-7 w-7 select-none items-center justify-center rounded-md border border-stone-200/80 bg-stone-50/90 text-sm leading-none"
         aria-hidden
@@ -114,9 +119,36 @@ function PedestrianRowItem({ pedestrian }: { pedestrian: Pedestrian }) {
       <span className="min-w-0 text-left text-gray-600">
         {isThirsty(pedestrian.thirst) ? "Thirsty" : "Not thirsty"}
       </span>
+    </div>
+  );
+}
+
+function VirtualizedPedestrianRow({
+  ariaAttributes,
+  index,
+  pedestrians,
+  style,
+}: {
+  ariaAttributes: {
+    "aria-posinset": number;
+    "aria-setsize": number;
+    role: "listitem";
+  };
+  index: number;
+  pedestrians: Pedestrian[];
+  style: CSSProperties;
+}) {
+  const pedestrian = pedestrians[index];
+  return (
+    <li {...ariaAttributes} style={style}>
+      <PedestrianRowItem pedestrian={pedestrian} />
     </li>
   );
 }
+
+type PedestrianRowProps = {
+  pedestrians: Pedestrian[];
+};
 
 export function PedestrianFilterList({
   pedestrians,
@@ -160,14 +192,23 @@ export function PedestrianFilterList({
           <span className="min-w-0 text-left">Pace</span>
           <span className="min-w-0 text-left">Thirst</span>
         </div>
-        <ul className="h-136 list-none space-y-0 overflow-y-auto rounded-b-md pb-1">
-          {pedestrians.map((pedestrian) => (
-            <PedestrianRowItem key={pedestrian.id} pedestrian={pedestrian} />
-          ))}
-          {pedestrians.length === 0 ? (
+        {pedestrians.length === 0 ? (
+          <ul className="list-none rounded-b-md pb-1" aria-label="Pedestrians list items">
             <li className="px-3 py-4 text-sm text-stone-500">No pedestrians yet. Waiting for live updates.</li>
-          ) : null}
-        </ul>
+          </ul>
+        ) : (
+          <List<PedestrianRowProps, "ul">
+            aria-label="Pedestrians list items"
+            className="list-none rounded-b-md pb-1"
+            overscanCount={OVERSCAN_COUNT}
+            rowComponent={VirtualizedPedestrianRow}
+            rowCount={pedestrians.length}
+            rowHeight={ROW_HEIGHT}
+            rowProps={{ pedestrians }}
+            style={{ height: LIST_HEIGHT, width: "100%" }}
+            tagName="ul"
+          />
+        )}
       </div>
     </div>
   );
