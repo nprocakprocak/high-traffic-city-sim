@@ -88,43 +88,6 @@ function FilterChips({
   );
 }
 
-function ListBlock({
-  filterChips,
-  listAria,
-  groupAria,
-}: {
-  filterChips: { id: string; label: string }[];
-  listAria: string;
-  groupAria: string;
-}) {
-  return (
-    <div className="flex w-full min-w-0 flex-col gap-2">
-      <div className="shrink-0">
-        <FilterChips ariaLabel={groupAria} chips={filterChips} selectedId="all" />
-      </div>
-      <div
-        className="flex w-full min-w-0 flex-col rounded-md border border-stone-200/80 bg-white/80 shadow-sm"
-        aria-label={listAria}
-      >
-        <div
-          className={`${ROW_GRID} shrink-0 rounded-t-md border-b border-stone-200/90 bg-stone-50/80 py-1 text-xs font-medium text-stone-500`}
-        >
-          <div className="h-7 w-7 shrink-0" aria-hidden />
-          <span className="min-w-0 text-left">Name</span>
-          <span className="min-w-0 text-left">Mood</span>
-          <span className="min-w-0 text-left">Pace</span>
-          <span className="min-w-0 text-left">Thirst</span>
-        </div>
-        <ul className="h-40 list-none space-y-0 overflow-y-auto rounded-b-md pb-1">
-          {MOCK_PEDESTRIAN_LIST_ROWS.map((p) => (
-            <PedestrianRowItem key={p.id} p={p} />
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-}
-
 interface MockPedestrianFilterListsProps {
   totalCount: number;
   paceCounters: {
@@ -186,21 +149,42 @@ export function MockPedestrianFilterLists({
 
   return (
     <div className="flex w-full min-w-0 flex-col gap-4">
-      <ListBlock
-        groupAria="Mood filter (layout only, not active)"
-        filterChips={moodChips}
-        listAria="Mock pedestrians, mood list"
-      />
-      <ListBlock
-        groupAria="Pace filter (layout only, not active)"
-        filterChips={velocityChips}
-        listAria="Mock pedestrians, pace list"
-      />
-      <ListBlock
-        groupAria="Thirst filter (layout only, not active)"
-        filterChips={thirstChips}
-        listAria="Mock pedestrians, thirst list"
-      />
+      <div className="flex w-full min-w-0 flex-col gap-2 rounded-md border border-stone-200/80 bg-white/70 p-2 shadow-sm">
+        <FilterChips
+          ariaLabel="Mood filter (layout only, not active)"
+          chips={moodChips}
+          selectedId="all"
+        />
+        <FilterChips
+          ariaLabel="Pace filter (layout only, not active)"
+          chips={velocityChips}
+          selectedId="all"
+        />
+        <FilterChips
+          ariaLabel="Thirst filter (layout only, not active)"
+          chips={thirstChips}
+          selectedId="all"
+        />
+      </div>
+      <div
+        className="flex w-full min-w-0 flex-col rounded-md border border-stone-200/80 bg-white/80 shadow-sm"
+        aria-label="Mock pedestrians list"
+      >
+        <div
+          className={`${ROW_GRID} shrink-0 rounded-t-md border-b border-stone-200/90 bg-stone-50/80 py-1 text-xs font-medium text-stone-500`}
+        >
+          <div className="h-7 w-7 shrink-0" aria-hidden />
+          <span className="min-w-0 text-left">Name</span>
+          <span className="min-w-0 text-left">Mood</span>
+          <span className="min-w-0 text-left">Pace</span>
+          <span className="min-w-0 text-left">Thirst</span>
+        </div>
+        <ul className="h-136 list-none space-y-0 overflow-y-auto rounded-b-md pb-1">
+          {MOCK_PEDESTRIAN_LIST_ROWS.map((p) => (
+            <PedestrianRowItem key={p.id} p={p} />
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
