@@ -23,11 +23,6 @@ const MOOD_ORDER: MockListPedestrian["mood"][] = [
 const RUN_VELOCITY_MIN = 2.4;
 const THIRSTY_THIRST = 50;
 
-const moodChips: { id: "all" | MockListPedestrian["mood"]; label: string }[] = [
-  { id: "all", label: "All (643)" },
-  ...MOOD_ORDER.map((m, index) => ({ id: m, label: `${MOOD_LABEL[m]} (${[182, 76, 94, 128, 63, 100][index]})` })),
-];
-
 const thirstChips: { id: "all" | "thirsty" | "notThirsty"; label: string }[] = [
   { id: "all", label: "All (643)" },
   { id: "thirsty", label: "Thirsty (274)" },
@@ -137,16 +132,46 @@ function ListBlock({
 }
 
 interface MockPedestrianFilterListsProps {
+  totalCount: number;
   paceCounters: {
-    totalCount: number;
     runningCount: number;
     walkingCount: number;
   };
+  moodCounters: {
+    happyCount: number;
+    sadCount: number;
+    angryCount: number;
+    excitedCount: number;
+    scaredCount: number;
+    shockedCount: number;
+  };
 }
 
-export function MockPedestrianFilterLists({ paceCounters }: MockPedestrianFilterListsProps) {
+function getMoodCount(mood: MockListPedestrian["mood"], moodCounters: MockPedestrianFilterListsProps["moodCounters"]): number {
+  switch (mood) {
+    case "happy":
+      return moodCounters.happyCount;
+    case "sad":
+      return moodCounters.sadCount;
+    case "angry":
+      return moodCounters.angryCount;
+    case "excited":
+      return moodCounters.excitedCount;
+    case "scared":
+      return moodCounters.scaredCount;
+    case "shocked":
+      return moodCounters.shockedCount;
+  }
+}
+
+export function MockPedestrianFilterLists({ totalCount, paceCounters, moodCounters }: MockPedestrianFilterListsProps) {
+  const moodChips: { id: "all" | MockListPedestrian["mood"]; label: string }[] = [
+    { id: "all", label: `All (${totalCount})` },
+    ...MOOD_ORDER.map((m) => ({ id: m, label: `${MOOD_LABEL[m]} (${getMoodCount(m, moodCounters)})` })),
+  ];
+
   const velocityChips: { id: "all" | "running" | "walking"; label: string }[] = [
-    { id: "all", label: `All (${paceCounters.totalCount})` },
+    { id: "all", label: `All (${totalCount})` },
     { id: "running", label: `Running (${paceCounters.runningCount})` },
     { id: "walking", label: `Walking (${paceCounters.walkingCount})` },
   ];

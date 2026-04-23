@@ -9,17 +9,25 @@ export class PedestrianService {
     'Yara', 'Zane'
   ];
 
-  private static readonly MOODS: Pedestrian["mood"][] = [
-    "happy",
-    "sad",
-    "angry",
-    "excited",
-    "scared",
-    "shocked",
+  private static readonly MOOD_WEIGHTS: { mood: Pedestrian["mood"]; cumulativeWeight: number }[] = [
+    { mood: "happy", cumulativeWeight: 47 },
+    { mood: "sad", cumulativeWeight: 60 },
+    { mood: "angry", cumulativeWeight: 68 },
+    { mood: "excited", cumulativeWeight: 84 },
+    { mood: "scared", cumulativeWeight: 91 },
+    { mood: "shocked", cumulativeWeight: 100 },
   ];
 
   static randomMood(): Pedestrian["mood"] {
-    return this.MOODS[Math.floor(Math.random() * this.MOODS.length)];
+    const roll = Math.random() * 100;
+
+    for (const { mood, cumulativeWeight } of this.MOOD_WEIGHTS) {
+      if (roll < cumulativeWeight) {
+        return mood;
+      }
+    }
+
+    return "shocked";
   }
 
   static randomVelocity(): number {

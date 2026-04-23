@@ -1,10 +1,18 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Pedestrian } from "@high-traffic-city-sim/types";
 
 interface PedestrianStatsPanelProps {
-  totalPedestrians: number;
+  totalCount: number;
   runningCount: number;
   walkingCount: number;
+  moodCounters: {
+    happyCount: number;
+    sadCount: number;
+    angryCount: number;
+    excitedCount: number;
+    scaredCount: number;
+    shockedCount: number;
+  };
 }
 
 const MOOD_COLORS: Record<Pedestrian["mood"], string> = {
@@ -16,19 +24,15 @@ const MOOD_COLORS: Record<Pedestrian["mood"], string> = {
   shocked: "#d484a8",
 };
 
-const MOCK_MOOD_PERCENTS: { mood: Pedestrian["mood"]; percent: number }[] = [
-  { mood: "happy", percent: 28 },
-  { mood: "sad", percent: 12 },
-  { mood: "angry", percent: 15 },
-  { mood: "excited", percent: 20 },
-  { mood: "scared", percent: 10 },
-  { mood: "shocked", percent: 15 },
-];
+const MOOD_ORDER: Pedestrian["mood"][] = ["happy", "sad", "angry", "excited", "scared", "shocked"];
 
 const PACE_SEGMENT_COLORS = {
   running: "#4a9ed4",
   walking: "#52c28c",
 } as const;
+const PIE_CENTER = 50;
+const PIE_RADIUS = 44;
+const PIE_ANIMATION_DURATION_MS = 180;
 
 function moodLabel(mood: Pedestrian["mood"]): string {
   const labels: Record<Pedestrian["mood"], string> = {
@@ -42,23 +46,121 @@ function moodLabel(mood: Pedestrian["mood"]): string {
   return labels[mood];
 }
 
+function moodCount(mood: Pedestrian["mood"], moodCounters: PedestrianStatsPanelProps["moodCounters"]): number {
+  switch (mood) {
+    case "happy":
+      return moodCounters.happyCount;
+    case "sad":
+      return moodCounters.sadCount;
+    case "angry":
+      return moodCounters.angryCount;
+    case "excited":
+      return moodCounters.excitedCount;
+    case "scared":
+      return moodCounters.scaredCount;
+    case "shocked":
+      return moodCounters.shockedCount;
+  }
+}
+
+function polarToCartesian(centerX: number, centerY: number, radius: number, angleInDegrees: number) {
+  const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180;
+  return {
+    x: centerX + radius * Math.cos(angleInRadians),
+    y: centerY + radius * Math.sin(angleInRadians),
+  };
+}
+
+function describePieSlice(startAngle: number, endAngle: number): string {
+  const boundedEndAngle = Math.min(endAngle, startAngle + 359.999);
+  const start = polarToCartesian(PIE_CENTER, PIE_CENTER, PIE_RADIUS, startAngle);
+  const end = polarToCartesian(PIE_CENTER, PIE_CENTER, PIE_RADIUS, boundedEndAngle);
+  const largeArcFlag = boundedEndAngle - startAngle > 180 ? 1 : 0;
+
+  return [
+    `M ${PIE_CENTER} ${PIE_CENTER}`,
+    `L ${start.x} ${start.y}`,
+    `A ${PIE_RADIUS} ${PIE_RADIUS} 0 ${largeArcFlag} 1 ${end.x} ${end.y}`,
+    "Z",
+  ].join(" ");
+}
+
 export function PedestrianStatsPanel({
-  totalPedestrians,
+  totalCount,
   runningCount,
   walkingCount,
+  moodCounters,
 }: PedestrianStatsPanelProps) {
   const [spawnPerSecond, setSpawnPerSecond] = useState(5);
 
-  const pieBackground = useMemo(() => {
-    let start = 0;
-    const stops: string[] = [];
-    for (const { mood, percent } of MOCK_MOOD_PERCENTS) {
-      const end = start + percent;
-      stops.push(`${MOOD_COLORS[mood]} ${start}% ${end}%`);
-      start = end;
+  const moodPercentages = useMemo(() => {
+    if (totalCount === 0) {
+      return MOOD_ORDER.map((mood) => ({ mood, percent: 0 }));
     }
-    return `conic-gradient(${stops.join(", ")})`;
-  }, []);
+
+    return MOOD_ORDER.map((mood) => {
+      return {
+        mood,
+        percent: Math.round((moodCount(mood, moodCounters) / totalCount) * 100),
+      };
+    });
+  }, [moodCounters, totalCount]);
+
+  const moodRatios = useMemo(() => {
+    if (totalCount === 0) {
+      return MOOD_ORDER.map(() => 0);
+    }
+    return MOOD_ORDER.map((mood) => moodCount(mood, moodCounters) / totalCount);
+  }, [moodCounters, totalCount]);
+  const [animatedMoodRatios, setAnimatedMoodRatios] = useState(moodRatios);
+  const animatedMoodRatiosRef = useRef(animatedMoodRatios);
+
+  useEffect(() => {
+    animatedMoodRatiosRef.current = animatedMoodRatios;
+  }, [animatedMoodRatios]);
+
+  useEffect(() => {
+    const startValues = animatedMoodRatiosRef.current;
+    const targetValues = moodRatios;
+    const startTime = performance.now();
+
+    let rafId = 0;
+    const tick = (now: number) => {
+      const progress = Math.min((now - startTime) / PIE_ANIMATION_DURATION_MS, 1);
+      const eased = 1 - (1 - progress) * (1 - progress);
+
+      const nextValues = targetValues.map((target, index) => {
+        const start = startValues[index] ?? 0;
+        return start + (target - start) * eased;
+      });
+
+      setAnimatedMoodRatios(nextValues);
+
+      if (progress < 1) {
+        rafId = window.requestAnimationFrame(tick);
+      }
+    };
+
+    rafId = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(rafId);
+  }, [moodRatios]);
+
+  const moodPieSlices = useMemo(() => {
+    let cumulativeRatio = 0;
+
+    return MOOD_ORDER.map((mood, index) => {
+      const ratio = Math.max(0, animatedMoodRatios[index] ?? 0);
+      const startAngle = cumulativeRatio * 360;
+      const endAngle = (cumulativeRatio + ratio) * 360;
+      cumulativeRatio += ratio;
+
+      return {
+        mood,
+        ratio,
+        pathD: describePieSlice(startAngle, endAngle),
+      };
+    });
+  }, [animatedMoodRatios]);
 
   const pacePercentages = useMemo(() => {
     const paceTotal = runningCount + walkingCount;
@@ -104,7 +206,7 @@ export function PedestrianStatsPanel({
         <div className="min-w-0 space-y-4" aria-label="Stats and spawn rate">
           <p className="text-sm text-gray-600">
             Total pedestrians:{" "}
-            <span className="font-medium text-gray-800 tabular-nums">{totalPedestrians}</span>
+            <span className="font-medium text-gray-800 tabular-nums">{totalCount}</span>
           </p>
           <div className="space-y-2">
             <p className="rounded-md border border-violet-200/90 bg-violet-50/85 px-3 py-2 text-sm font-medium text-violet-900/80">
@@ -136,16 +238,23 @@ export function PedestrianStatsPanel({
           <div className="flex min-w-0 flex-col items-stretch gap-4 sm:flex-row sm:items-start sm:gap-6">
             <div className="flex flex-col items-center">
               <div
-                className="h-36 w-36 shrink-0 rounded-full border border-white/80 shadow-sm ring-1 ring-stone-200/80"
-                style={{ background: pieBackground }}
+                className="flex h-36 w-36 shrink-0 items-center justify-center rounded-full border border-white/80 bg-white/70 shadow-sm ring-1 ring-stone-200/80"
                 role="img"
-                aria-label="Mood distribution among pedestrians (mocked data, percentages in legend)"
-              />
-              <p className="mt-2 text-center text-xs text-gray-500">Mood share (mock data)</p>
+                aria-label="Mood distribution among pedestrians (live data, percentages in legend)"
+              >
+                <svg viewBox="0 0 100 100" className="h-full w-full">
+                  {moodPieSlices.map((slice) =>
+                    slice.ratio > 0 ? (
+                      <path key={slice.mood} d={slice.pathD} fill={MOOD_COLORS[slice.mood]} />
+                    ) : null,
+                  )}
+                </svg>
+              </div>
+              <p className="mt-2 text-center text-xs text-gray-500">Mood share (live data)</p>
             </div>
 
             <ul className="w-full min-w-0 max-w-full flex-1 space-y-2">
-              {MOCK_MOOD_PERCENTS.map(({ mood, percent }) => (
+              {moodPercentages.map(({ mood, percent }) => (
                 <li key={mood} className="flex items-center justify-between gap-2 text-sm">
                   <div className="flex min-w-0 items-center gap-2">
                     <span

@@ -78,9 +78,10 @@ export default function HomePage() {
 
             <div className="w-full min-w-0 max-w-full">
               <PedestrianStatsPanel
-                totalPedestrians={pedestrians.length}
+                totalCount={pedestrianStats.totalCount}
                 runningCount={pedestrianStats.pace.runningCount}
                 walkingCount={pedestrianStats.pace.walkingCount}
+                moodCounters={pedestrianStats.mood}
               />
             </div>
           </div>
@@ -90,7 +91,11 @@ export default function HomePage() {
             aria-label="Pedestrian lists"
           >
             <div className="min-h-0 w-full min-w-0 flex-1">
-              <MockPedestrianFilterLists paceCounters={pedestrianStats.pace} />
+              <MockPedestrianFilterLists
+                totalCount={pedestrianStats.totalCount}
+                paceCounters={pedestrianStats.pace}
+                moodCounters={pedestrianStats.mood}
+              />
             </div>
           </section>
         </div>
