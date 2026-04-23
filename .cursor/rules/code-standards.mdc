@@ -9,6 +9,7 @@ alwaysApply: true
 - Prefer functional React components.
 - Keep components small and single-responsibility.
 - Avoid components over ~150 lines.
+- Prefer interface over type when defining component props.
 - Use clear naming (PascalCase for components, camelCase for variables, UPPER_SNAKE_CASE for constants).
 - Avoid deeply nested logic.
 - Write clean, readable, self-documenting code.
