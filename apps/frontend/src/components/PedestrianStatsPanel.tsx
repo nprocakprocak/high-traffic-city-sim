@@ -71,12 +71,12 @@ export function PedestrianStatsPanel({ totalPedestrians }: PedestrianStatsPanelP
             <span className="font-medium text-gray-800 tabular-nums">{totalPedestrians}</span>
           </p>
           <div className="space-y-2">
-            <p className="rounded-md border border-sky-200/80 bg-sky-50/90 px-3 py-2 text-sm font-medium text-sky-900/90">
+            <p className="rounded-md border border-violet-200/90 bg-violet-50/85 px-3 py-2 text-sm font-medium text-violet-900/80">
               Slide right to generate more pedestrians
             </p>
             <input
               type="range"
-              className="w-full cursor-pointer accent-sky-600"
+              className="w-full cursor-pointer accent-violet-400"
               min={1}
               max={20}
               step={1}
