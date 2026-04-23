@@ -1,18 +1,17 @@
 "use client";
 
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import { CityMap } from "../components/CityMap";
+import { ErrorDisplay } from "../components/ErrorDisplay";
+import { PedestrianFilterList } from "../components/pedestrianFilterList/PedestrianFilterList";
+import { PedestrianStatsPanel } from "../components/PedestrianStatsPanel";
+import { CITY_CELL_SIZE, CITY_GRID_COLS, CITY_GRID_ROWS } from "../constants";
 import { usePedestrians } from "../hooks/usePedestrians";
 import { usePedestrianStats } from "../hooks/usePedestrianStats";
-import { ErrorDisplay } from "../components/ErrorDisplay";
-import { CityMap } from "../components/CityMap";
-import { PedestrianStatsPanel } from "../components/PedestrianStatsPanel";
-import { PedestrianFilterList } from "../components/PedestrianFilterList";
+import { CityCell, GridPosition } from "../types/cell";
 import { generateCityGrid } from "../utils/cityGridGenerator";
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { extractRoadPositions, getRandomRoadPosition } from "../utils/cityRoads";
-import { CityCell } from "../types/cell";
-import { GridPosition } from "../types/cell";
 import { convertGridPathToPixelPoints, findPath } from "../utils/pathFinder";
-import { CITY_CELL_SIZE, CITY_GRID_COLS, CITY_GRID_ROWS } from "../constants";
 
 export default function HomePage() {
   const [cityGrid, setCityGrid] = useState<CityCell[][]>([]);
