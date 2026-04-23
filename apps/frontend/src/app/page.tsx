@@ -5,7 +5,7 @@ import { usePedestrianStats } from "../hooks/usePedestrianStats";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { CityMap } from "../components/CityMap";
 import { PedestrianStatsPanel } from "../components/PedestrianStatsPanel";
-import { MockPedestrianFilterLists } from "../components/MockPedestrianFilterLists";
+import { PedestrianFilterList } from "../components/PedestrianFilterList";
 import { generateCityGrid } from "../utils/cityGridGenerator";
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { extractRoadPositions, getRandomRoadPosition } from "../utils/cityRoads";
@@ -91,7 +91,8 @@ export default function HomePage() {
             aria-label="Pedestrian lists"
           >
             <div className="min-h-0 w-full min-w-0 flex-1">
-              <MockPedestrianFilterLists
+              <PedestrianFilterList
+                pedestrians={pedestrians}
                 totalCount={pedestrianStats.totalCount}
                 paceCounters={pedestrianStats.pace}
                 moodCounters={pedestrianStats.mood}
