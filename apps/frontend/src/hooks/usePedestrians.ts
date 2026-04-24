@@ -60,7 +60,11 @@ export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps)
     });
   }, []);
 
-  const { error } = useWebSocket(onNewPedestrian, removePedestrian, updatePedestrian);
+  const { error, setSpawnInterval } = useWebSocket(
+    onNewPedestrian,
+    removePedestrian,
+    updatePedestrian,
+  );
 
   return {
     pedestrians,
@@ -68,5 +72,6 @@ export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps)
     removePedestrian,
     updatePedestrian,
     error,
+    setSpawnInterval,
   };
 }

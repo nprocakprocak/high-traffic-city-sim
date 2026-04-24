@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { Pedestrian } from "@high-traffic-city-sim/types";
 
@@ -9,6 +9,7 @@ export function useWebSocket(
 ) {
   const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const socketRef = useRef<Socket | null>(null);
   const onNewPedestrianRef = useRef(onNewPedestrian);
   const onRemovePedestrianRef = useRef(onRemovePedestrian);
   const onUpdatePedestrianRef = useRef(onUpdatePedestrian);
@@ -25,12 +26,17 @@ export function useWebSocket(
     onUpdatePedestrianRef.current = onUpdatePedestrian;
   }, [onUpdatePedestrian]);
 
+  const setSpawnInterval = useCallback((value: number) => {
+    socketRef.current?.emit("set_spawn_interval_mult", value);
+  }, []);
+
   useEffect(() => {
     const newSocket: Socket = io("http://localhost:4000", {
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionAttempts: 5,
     });
+    socketRef.current = newSocket;
 
     newSocket.on("connect", () => {
       setIsConnected(true);
@@ -68,11 +74,13 @@ export function useWebSocket(
 
     return () => {
       newSocket.disconnect();
+      socketRef.current = null;
     };
   }, []);
 
   return {
     error,
     isConnected,
+    setSpawnInterval,
   };
 }

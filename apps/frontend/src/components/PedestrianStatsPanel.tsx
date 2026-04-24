@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pedestrian } from "@high-traffic-city-sim/types";
+import { SpawnIntervalSlider } from "./SpawnIntervalSlider";
 
 interface PedestrianStatsPanelProps {
+  onSpawnIntervalChange: (value: number) => void;
   totalCount: number;
   runningCount: number;
   walkingCount: number;
@@ -94,12 +96,21 @@ function describePieSlice(startAngle: number, endAngle: number): string {
 }
 
 export function PedestrianStatsPanel({
+  onSpawnIntervalChange,
   totalCount,
   runningCount,
   walkingCount,
   moodCounters,
 }: PedestrianStatsPanelProps) {
-  const [spawnPerSecond, setSpawnPerSecond] = useState(5);
+  const [spawnIntervalMult, setSpawnIntervalMultState] = useState(8);
+
+  const onSpawnIntChange = useCallback(
+    (value: number) => {
+      setSpawnIntervalMultState(value);
+      onSpawnIntervalChange(value);
+    },
+    [onSpawnIntervalChange],
+  );
 
   const moodPercentages = useMemo(() => {
     if (totalCount === 0) {
@@ -220,19 +231,7 @@ export function PedestrianStatsPanel({
             <p className="rounded-md border border-violet-200/90 bg-violet-50/85 px-3 py-2 text-sm font-medium text-violet-900/80">
               Slide right to generate more pedestrians
             </p>
-            <input
-              type="range"
-              className="w-full cursor-pointer accent-violet-400"
-              min={1}
-              max={20}
-              step={1}
-              value={spawnPerSecond}
-              onChange={(e) => setSpawnPerSecond(Number(e.target.value))}
-              aria-label="Adjust pedestrian spawn rate (preview, not connected yet)"
-              aria-valuemin={1}
-              aria-valuemax={20}
-              aria-valuenow={spawnPerSecond}
-            />
+            <SpawnIntervalSlider value={spawnIntervalMult} onChange={onSpawnIntChange} />
             <p className="text-xs leading-relaxed text-gray-500">
               Pedestrians are updated live over WebSocket.
             </p>

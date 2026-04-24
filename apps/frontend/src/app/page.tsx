@@ -16,7 +16,13 @@ import { convertGridPathToPixelPoints, findPath } from "../utils/pathFinder";
 export default function HomePage() {
   const [cityGrid, setCityGrid] = useState<CityCell[][]>([]);
   const [roadPositions, setRoadPositions] = useState<GridPosition[]>([]);
-  const { pedestrians, pedestriansMap, updatePedestrian, error } = usePedestrians({
+  const {
+    pedestrians,
+    pedestriansMap,
+    updatePedestrian,
+    error,
+    setSpawnInterval,
+  } = usePedestrians({
     cityGrid,
     roadPositions,
   });
@@ -77,6 +83,7 @@ export default function HomePage() {
 
             <div className="w-full min-w-0 max-w-full">
               <PedestrianStatsPanel
+                onSpawnIntervalChange={setSpawnInterval}
                 totalCount={pedestrianStats.totalCount}
                 runningCount={pedestrianStats.pace.runningCount}
                 walkingCount={pedestrianStats.pace.walkingCount}
