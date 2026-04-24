@@ -1,7 +1,7 @@
 import type { ChangeEvent } from "react";
 
 const MIN_MULT = 1;
-const MAX_MULT = 10;
+const MAX_MULT = 20;
 const STEP = 1;
 
 const uiPositionFromMult = (mult: number) => MAX_MULT + MIN_MULT - mult;
@@ -30,10 +30,10 @@ export function SpawnIntervalSlider({ value, onChange }: SpawnIntervalSliderProp
           step={STEP}
           value={uiValue}
           onChange={handleChange}
-          aria-label="Adjust pedestrian spawn interval. Left is faster, right is slower"
+          aria-label="Adjust pedestrian spawn interval. Right is faster, left is slower"
           aria-valuemin={MIN_MULT}
           aria-valuemax={MAX_MULT}
-          aria-valuenow={value}
+          aria-valuenow={uiValue}
           aria-labelledby="spawn-interval-min-label spawn-interval-max-label"
         />
       </div>

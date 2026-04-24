@@ -7,7 +7,7 @@ interface StatsSpawnColumnProps {
 }
 
 export function StatsSpawnColumn({ totalCount, onSpawnIntervalChange }: StatsSpawnColumnProps) {
-  const [spawnIntervalMult, setSpawnIntervalMultState] = useState(8);
+  const [spawnIntervalMult, setSpawnIntervalMultState] = useState(16);
 
   const onSpawnIntChange = useCallback(
     (value: number) => {

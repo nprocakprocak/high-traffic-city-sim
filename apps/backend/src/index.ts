@@ -17,15 +17,15 @@ const io = new Server(httpServer, {
   }
 });
 
-const DEFAULT_SPAWN_MULT = 8;
-const SPAWN_BASE_MS = 100;
+const DEFAULT_SPAWN_MULT = 16;
+const SPAWN_BASE_MS = 50;
 
 const clampSpawnMult = (value: unknown): number => {
   const n = typeof value === "number" ? value : Number(value);
   if (!Number.isFinite(n)) {
     return DEFAULT_SPAWN_MULT;
   }
-  return Math.min(10, Math.max(1, Math.trunc(n)));
+  return Math.min(20, Math.max(1, Math.trunc(n)));
 };
 
 io.on("connection", (socket) => {
