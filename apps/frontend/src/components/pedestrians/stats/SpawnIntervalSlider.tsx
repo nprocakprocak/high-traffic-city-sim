@@ -21,7 +21,6 @@ export function SpawnIntervalSlider({ value, onChange }: SpawnIntervalSliderProp
 
   return (
     <div className="w-full min-w-0 max-w-full space-y-2">
-      <p className="text-sm text-gray-600">Spawn interval (100 ms × multiplier)</p>
       <div className="flex w-full min-w-0 max-w-full items-center gap-3">
         <input
           type="range"

@@ -1,5 +1,5 @@
 import type { Pedestrian } from "@high-traffic-city-sim/types";
-import { MOOD_EMOJI_MAP } from "../../constants";
+import { MOOD_EMOJI_MAP } from "../../../constants";
 import { MOOD_LABEL, ROW_GRID } from "./constants";
 import { isThirsty, paceLabel } from "./helpers/rowDisplay";
 

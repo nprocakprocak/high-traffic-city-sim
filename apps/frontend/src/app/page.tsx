@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { CityMap } from "../components/CityMap";
 import { ErrorDisplay } from "../components/ErrorDisplay";
-import { PedestrianFilterList } from "../components/pedestrianFilterList/PedestrianFilterList";
-import { PedestrianStatsPanel } from "../components/PedestrianStatsPanel";
+import { PedestrianFilterList } from "../components/pedestrians/filterList/PedestrianFilterList";
+import { PedestrianStatsPanel } from "../components/pedestrians/stats/PedestrianStatsPanel";  
 import { CITY_CELL_SIZE, CITY_GRID_COLS, CITY_GRID_ROWS } from "../constants";
 import { usePedestrians } from "../hooks/usePedestrians";
 import { usePedestrianStats } from "../hooks/usePedestrianStats";
