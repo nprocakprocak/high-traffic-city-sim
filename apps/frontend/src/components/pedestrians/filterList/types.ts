@@ -21,5 +21,5 @@ export interface PedestrianFilterListProps {
 export type MoodCountersShape = PedestrianFilterListProps["moodCounters"];
 
 export type PedestrianRowListProps = {
-  pedestrianIds: string[];
+  getPedestrianId: (index: number) => string | undefined;
 };

@@ -10,19 +10,21 @@ type ListItemAria = {
 
 interface VirtualizedPedestrianListRowProps {
   ariaAttributes: ListItemAria;
+  getPedestrianId: (index: number) => string | undefined;
   index: number;
-  pedestrianIds: string[];
   style: CSSProperties;
 }
 
 export function VirtualizedPedestrianListRow({
   ariaAttributes,
+  getPedestrianId,
   index,
-  pedestrianIds,
   style,
 }: VirtualizedPedestrianListRowProps) {
-  const pedestrianId = pedestrianIds[index];
-  const pedestrian = usePedestriansStore((state) => state.pedestriansById[pedestrianId]);
+  const pedestrianId = getPedestrianId(index);
+  const pedestrian = usePedestriansStore((state) =>
+    pedestrianId ? state.pedestriansById[pedestrianId] : undefined,
+  );
   if (!pedestrian) {
     return null;
   }

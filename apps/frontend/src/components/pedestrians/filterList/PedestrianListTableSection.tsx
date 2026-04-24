@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { List } from "react-window";
 import { LIST_HEIGHT, OVERSCAN_COUNT, ROW_GRID, ROW_HEIGHT } from "./constants";
 import { VirtualizedPedestrianListRow } from "./VirtualizedPedestrianListRow";
@@ -8,6 +9,11 @@ interface PedestrianListTableSectionProps {
 }
 
 export function PedestrianListTableSection({ pedestrianIds }: PedestrianListTableSectionProps) {
+  const getPedestrianId = useCallback(
+    (index: number) => pedestrianIds[index],
+    [pedestrianIds],
+  );
+
   return (
     <div
       className="flex w-full min-w-0 flex-col rounded-md border border-stone-200/80 bg-white/80 shadow-sm"
@@ -36,7 +42,7 @@ export function PedestrianListTableSection({ pedestrianIds }: PedestrianListTabl
           rowComponent={VirtualizedPedestrianListRow}
           rowCount={pedestrianIds.length}
           rowHeight={ROW_HEIGHT}
-          rowProps={{ pedestrianIds }}
+          rowProps={{ getPedestrianId }}
           style={{ height: LIST_HEIGHT, width: "100%" }}
           tagName="ul"
         />
