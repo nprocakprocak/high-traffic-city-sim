@@ -31,7 +31,7 @@ export function PedestrianListTableSection({ pedestrianIds }: PedestrianListTabl
       {pedestrianIds.length === 0 ? (
         <ul className="list-none rounded-b-md pb-1" aria-label="Pedestrians list items">
           <li className="px-3 py-4 text-sm text-stone-500">
-            No pedestrians yet. Waiting for live updates.
+            No pedestrians. Waiting for live updates.
           </li>
         </ul>
       ) : (

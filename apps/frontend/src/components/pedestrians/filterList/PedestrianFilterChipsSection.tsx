@@ -2,18 +2,27 @@ import type { Pedestrian } from "@high-traffic-city-sim/types";
 import { FilterChips } from "./FilterChips";
 import { MOOD_LABEL, MOOD_ORDER } from "./constants";
 import { getMoodCount } from "./helpers/moodCount";
-import type { PedestrianFilterListProps } from "./types";
+import type { PedestrianFilterListProps, PedestrianFilterSelection } from "./types";
 
 type PedestrianFilterChipsSectionProps = Pick<
   PedestrianFilterListProps,
   "totalCount" | "paceCounters" | "moodCounters" | "thirstCounters"
->;
+> & {
+  selectedFilters: PedestrianFilterSelection;
+  onSelectMood: (mood: PedestrianFilterSelection["mood"]) => void;
+  onSelectPace: (pace: PedestrianFilterSelection["pace"]) => void;
+  onSelectThirst: (thirst: PedestrianFilterSelection["thirst"]) => void;
+};
 
 export function PedestrianFilterChipsSection({
   totalCount,
   paceCounters,
   moodCounters,
   thirstCounters,
+  selectedFilters,
+  onSelectMood,
+  onSelectPace,
+  onSelectThirst,
 }: PedestrianFilterChipsSectionProps) {
   const moodChips: { id: "all" | Pedestrian["mood"]; label: string }[] = [
     { id: "all", label: `All (${totalCount})` },
@@ -36,19 +45,19 @@ export function PedestrianFilterChipsSection({
   return (
     <div className="flex w-full min-w-0 flex-col gap-2 rounded-md border border-stone-200/80 bg-white/70 p-2 shadow-sm">
       <FilterChips
-        ariaLabel="Mood filter (layout only, not active)"
         chips={moodChips}
-        selectedId="all"
+        selectedId={selectedFilters.mood}
+        onSelect={(id) => onSelectMood(id as PedestrianFilterSelection["mood"])}
       />
       <FilterChips
-        ariaLabel="Pace filter (layout only, not active)"
         chips={paceChips}
-        selectedId="all"
+        selectedId={selectedFilters.pace}
+        onSelect={(id) => onSelectPace(id as PedestrianFilterSelection["pace"])}
       />
       <FilterChips
-        ariaLabel="Thirst filter (layout only, not active)"
         chips={thirstChips}
-        selectedId="all"
+        selectedId={selectedFilters.thirst}
+        onSelect={(id) => onSelectThirst(id as PedestrianFilterSelection["thirst"])}
       />
     </div>
   );

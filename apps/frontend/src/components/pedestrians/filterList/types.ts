@@ -20,6 +20,12 @@ export interface PedestrianFilterListProps {
 
 export type MoodCountersShape = PedestrianFilterListProps["moodCounters"];
 
-export type PedestrianRowListProps = {
+export interface PedestrianRowListProps {
   getPedestrianId: (index: number) => string | undefined;
-};
+}
+
+export interface PedestrianFilterSelection {
+  mood: "all" | "happy" | "sad" | "angry" | "excited" | "scared" | "shocked";
+  pace: "all" | "running" | "walking";
+  thirst: "all" | "thirsty" | "notThirsty";
+}
