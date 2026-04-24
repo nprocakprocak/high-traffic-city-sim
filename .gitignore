@@ -5,3 +5,4 @@ apps/frontend/.next
 apps/backend/dist
 apps/types/dist
 .env
+*.tsbuildinfo
