@@ -1,14 +1,13 @@
-import type { Pedestrian } from "@high-traffic-city-sim/types";
 import { List } from "react-window";
 import { LIST_HEIGHT, OVERSCAN_COUNT, ROW_GRID, ROW_HEIGHT } from "./constants";
 import { VirtualizedPedestrianListRow } from "./VirtualizedPedestrianListRow";
 import type { PedestrianRowListProps } from "./types";
 
 interface PedestrianListTableSectionProps {
-  pedestrians: Pedestrian[];
+  pedestrianIds: string[];
 }
 
-export function PedestrianListTableSection({ pedestrians }: PedestrianListTableSectionProps) {
+export function PedestrianListTableSection({ pedestrianIds }: PedestrianListTableSectionProps) {
   return (
     <div
       className="flex w-full min-w-0 flex-col rounded-md border border-stone-200/80 bg-white/80 shadow-sm"
@@ -23,7 +22,7 @@ export function PedestrianListTableSection({ pedestrians }: PedestrianListTableS
         <span className="min-w-0 text-left">Pace</span>
         <span className="min-w-0 text-left">Thirst</span>
       </div>
-      {pedestrians.length === 0 ? (
+      {pedestrianIds.length === 0 ? (
         <ul className="list-none rounded-b-md pb-1" aria-label="Pedestrians list items">
           <li className="px-3 py-4 text-sm text-stone-500">
             No pedestrians yet. Waiting for live updates.
@@ -35,9 +34,9 @@ export function PedestrianListTableSection({ pedestrians }: PedestrianListTableS
           className="list-none rounded-b-md pb-1"
           overscanCount={OVERSCAN_COUNT}
           rowComponent={VirtualizedPedestrianListRow}
-          rowCount={pedestrians.length}
+          rowCount={pedestrianIds.length}
           rowHeight={ROW_HEIGHT}
-          rowProps={{ pedestrians }}
+          rowProps={{ pedestrianIds }}
           style={{ height: LIST_HEIGHT, width: "100%" }}
           tagName="ul"
         />

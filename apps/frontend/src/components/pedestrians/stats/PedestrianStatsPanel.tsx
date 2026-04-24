@@ -1,22 +1,22 @@
+import { useShallow } from "zustand/react/shallow";
+import { usePedestriansStore } from "../../../stores/pedestriansStore";
 import { PedestrianChartsColumn } from "./PedestrianChartsColumn";
 import { StatsSpawnColumn } from "./StatsSpawnColumn";
-import type { PedestrianStatsMoodCounters } from "./types";
 
 export interface PedestrianStatsPanelProps {
   onSpawnIntervalChange: (value: number) => void;
-  totalCount: number;
-  runningCount: number;
-  walkingCount: number;
-  moodCounters: PedestrianStatsMoodCounters;
 }
 
-export function PedestrianStatsPanel({
-  onSpawnIntervalChange,
-  totalCount,
-  runningCount,
-  walkingCount,
-  moodCounters,
-}: PedestrianStatsPanelProps) {
+export function PedestrianStatsPanel({ onSpawnIntervalChange }: PedestrianStatsPanelProps) {
+  const { totalCount, runningCount, walkingCount, moodCounters } = usePedestriansStore(
+    useShallow((state) => ({
+      totalCount: state.stats.totalCount,
+      runningCount: state.stats.pace.runningCount,
+      walkingCount: state.stats.pace.walkingCount,
+      moodCounters: state.stats.mood,
+    })),
+  );
+
   return (
     <div
       className="w-full min-w-0 max-w-full rounded-lg border border-gray-200/90 bg-stone-50/90 p-4"

@@ -1,17 +1,15 @@
 import { CityGrid } from "./CityGrid";
 import { GridCell } from "./GridCell";
 import { CityCell, GridPosition } from "../types/cell";
-import { Pedestrian } from "@high-traffic-city-sim/types";
 import { PedestriansLayer } from "./PedestriansLayer";
 import { useCallback } from "react";
 
 interface CityMapProps {
   cityGrid: CityCell[][];
-  pedestrians: Pedestrian[];
   onPedestrianStop: (id: string) => void;
 }
 
-export function CityMap({ cityGrid, pedestrians, onPedestrianStop }: CityMapProps) {
+export function CityMap({ cityGrid, onPedestrianStop }: CityMapProps) {
   const rows = cityGrid.length;
   const cols = cityGrid[0]?.length ?? 0;
 
@@ -31,7 +29,7 @@ export function CityMap({ cityGrid, pedestrians, onPedestrianStop }: CityMapProp
   return (
     <div className="relative grid">
       <CityGrid cityGrid={cityGrid} renderCell={renderCell} />
-      <PedestriansLayer pedestrians={pedestrians} onPedestrianStop={onPedestrianStop} />
+      <PedestriansLayer onPedestrianStop={onPedestrianStop} />
     </div>
   );
 }

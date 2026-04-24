@@ -1,9 +1,10 @@
 import { Pedestrian } from "@high-traffic-city-sim/types";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback } from "react";
+import { usePedestriansStore } from "../stores/pedestriansStore";
 import { CityCell, GridPosition } from "../types/cell";
 import { getRandomRoadPosition } from "../utils/cityRoads";
-import { useWebSocket } from "./useWebSocket";
 import { convertGridPathToPixelPoints, findPath } from "../utils/pathFinder";
+import { useWebSocket } from "./useWebSocket";
 
 interface UsePedestriansProps {
   cityGrid: CityCell[][];
@@ -11,8 +12,9 @@ interface UsePedestriansProps {
 }
 
 export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps) {
-  const [pedestriansMap, setPedestriansMap] = useState<Map<string, Pedestrian>>(new Map());
-  const pedestrians = useMemo(() => Array.from(pedestriansMap.values()), [pedestriansMap]);
+  const addPedestrian = usePedestriansStore((state) => state.addPedestrian);
+  const removePedestrian = usePedestriansStore((state) => state.removePedestrian);
+  const updatePedestrian = usePedestriansStore((state) => state.updatePedestrian);
 
   const onNewPedestrian = useCallback(
     (sockPedestrian: Pedestrian) => {
@@ -32,33 +34,10 @@ export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps)
         destination,
       };
 
-      setPedestriansMap((prev) => {
-        const map = new Map(prev);
-        map.set(pedestrian.id, pedestrian);
-        return map;
-      });
+      addPedestrian(pedestrian);
     },
-    [cityGrid, roadPositions],
+    [addPedestrian, cityGrid, roadPositions],
   );
-
-  const removePedestrian = useCallback((id: string) => {
-    setPedestriansMap((prev) => {
-      const map = new Map(prev);
-      map.delete(id);
-      return map;
-    });
-  }, []);
-
-  const updatePedestrian = useCallback((id: string, updates: Partial<Omit<Pedestrian, "id">>) => {
-    setPedestriansMap((prev) => {
-      const map = new Map(prev);
-      const p = map.get(id);
-      if (p) {
-        map.set(id, { ...p, ...updates });
-      }
-      return map;
-    });
-  }, []);
 
   const { error, setSpawnInterval } = useWebSocket(
     onNewPedestrian,
@@ -67,9 +46,6 @@ export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps)
   );
 
   return {
-    pedestrians,
-    pedestriansMap,
-    removePedestrian,
     updatePedestrian,
     error,
     setSpawnInterval,

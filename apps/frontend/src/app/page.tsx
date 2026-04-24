@@ -7,7 +7,7 @@ import { PedestrianFilterList } from "../components/pedestrians/filterList/Pedes
 import { PedestrianStatsPanel } from "../components/pedestrians/stats/PedestrianStatsPanel";  
 import { CITY_CELL_SIZE, CITY_GRID_COLS, CITY_GRID_ROWS } from "../constants";
 import { usePedestrians } from "../hooks/usePedestrians";
-import { usePedestrianStats } from "../hooks/usePedestrianStats";
+import { usePedestriansStore } from "../stores/pedestriansStore";
 import { CityCell, GridPosition } from "../types/cell";
 import { generateCityGrid } from "../utils/cityGridGenerator";
 import { extractRoadPositions, getRandomRoadPosition } from "../utils/cityRoads";
@@ -16,22 +16,11 @@ import { convertGridPathToPixelPoints, findPath } from "../utils/pathFinder";
 export default function HomePage() {
   const [cityGrid, setCityGrid] = useState<CityCell[][]>([]);
   const [roadPositions, setRoadPositions] = useState<GridPosition[]>([]);
-  const {
-    pedestrians,
-    pedestriansMap,
-    updatePedestrian,
-    error,
-    setSpawnInterval,
-  } = usePedestrians({
+  const { updatePedestrian, error, setSpawnInterval } = usePedestrians({
     cityGrid,
     roadPositions,
   });
-  const pedestrianStats = usePedestrianStats(pedestriansMap);
-  const pedestriansMapRef = useRef(pedestriansMap);
-
-  useEffect(() => {
-    pedestriansMapRef.current = pedestriansMap;
-  }, [pedestriansMap]);
+  const pedestriansStoreRef = useRef(usePedestriansStore);
 
   const newDestination = useCallback(
     (id: string) => {
@@ -39,7 +28,7 @@ export default function HomePage() {
         return;
       }
 
-      const startPosition = pedestriansMapRef.current.get(id)?.destination;
+      const startPosition = pedestriansStoreRef.current.getState().pedestriansById[id]?.destination;
       const destination = getRandomRoadPosition(roadPositions);
       if (!startPosition || !destination) {
         return;
@@ -76,19 +65,12 @@ export default function HomePage() {
             <section className="w-fit max-w-full" aria-label="City map">
               <CityMap
                 cityGrid={cityGrid}
-                pedestrians={pedestrians}
                 onPedestrianStop={newDestination}
               />
             </section>
 
             <div className="w-full min-w-0 max-w-full">
-              <PedestrianStatsPanel
-                onSpawnIntervalChange={setSpawnInterval}
-                totalCount={pedestrianStats.totalCount}
-                runningCount={pedestrianStats.pace.runningCount}
-                walkingCount={pedestrianStats.pace.walkingCount}
-                moodCounters={pedestrianStats.mood}
-              />
+              <PedestrianStatsPanel onSpawnIntervalChange={setSpawnInterval} />
             </div>
           </div>
 
@@ -97,13 +79,7 @@ export default function HomePage() {
             aria-label="Pedestrian lists"
           >
             <div className="min-h-0 w-full min-w-0 flex-1">
-              <PedestrianFilterList
-                pedestrians={pedestrians}
-                totalCount={pedestrianStats.totalCount}
-                paceCounters={pedestrianStats.pace}
-                moodCounters={pedestrianStats.mood}
-                thirstCounters={pedestrianStats.thirst}
-              />
+              <PedestrianFilterList />
             </div>
           </section>
         </div>

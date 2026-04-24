@@ -1,14 +1,20 @@
+import { useShallow } from "zustand/react/shallow";
+import { usePedestriansStore } from "../../../stores/pedestriansStore";
 import { PedestrianFilterChipsSection } from "./PedestrianFilterChipsSection";
 import { PedestrianListTableSection } from "./PedestrianListTableSection";
-import type { PedestrianFilterListProps } from "./types";
 
-export function PedestrianFilterList({
-  pedestrians,
-  totalCount,
-  paceCounters,
-  moodCounters,
-  thirstCounters,
-}: PedestrianFilterListProps) {
+export function PedestrianFilterList() {
+  const { pedestrianIds, totalCount, paceCounters, moodCounters, thirstCounters } =
+    usePedestriansStore(
+      useShallow((state) => ({
+        pedestrianIds: state.pedestrianIds,
+        totalCount: state.stats.totalCount,
+        paceCounters: state.stats.pace,
+        moodCounters: state.stats.mood,
+        thirstCounters: state.stats.thirst,
+      })),
+    );
+
   return (
     <div className="flex w-full min-w-0 flex-col gap-4">
       <PedestrianFilterChipsSection
@@ -17,9 +23,7 @@ export function PedestrianFilterList({
         moodCounters={moodCounters}
         thirstCounters={thirstCounters}
       />
-      <PedestrianListTableSection pedestrians={pedestrians} />
+      <PedestrianListTableSection pedestrianIds={pedestrianIds} />
     </div>
   );
 }
-
-export type { PedestrianFilterListProps } from "./types";

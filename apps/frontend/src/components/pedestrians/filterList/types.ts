@@ -1,7 +1,4 @@
-import type { Pedestrian } from "@high-traffic-city-sim/types";
-
 export interface PedestrianFilterListProps {
-  pedestrians: Pedestrian[];
   totalCount: number;
   paceCounters: {
     runningCount: number;
@@ -24,5 +21,5 @@ export interface PedestrianFilterListProps {
 export type MoodCountersShape = PedestrianFilterListProps["moodCounters"];
 
 export type PedestrianRowListProps = {
-  pedestrians: Pedestrian[];
+  pedestrianIds: string[];
 };

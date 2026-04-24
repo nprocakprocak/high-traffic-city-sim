@@ -1,5 +1,5 @@
-import type { Pedestrian } from "@high-traffic-city-sim/types";
 import type { CSSProperties } from "react";
+import { usePedestriansStore } from "../../../stores/pedestriansStore";
 import { PedestrianListRowContent } from "./PedestrianListRowContent";
 
 type ListItemAria = {
@@ -11,17 +11,22 @@ type ListItemAria = {
 interface VirtualizedPedestrianListRowProps {
   ariaAttributes: ListItemAria;
   index: number;
-  pedestrians: Pedestrian[];
+  pedestrianIds: string[];
   style: CSSProperties;
 }
 
 export function VirtualizedPedestrianListRow({
   ariaAttributes,
   index,
-  pedestrians,
+  pedestrianIds,
   style,
 }: VirtualizedPedestrianListRowProps) {
-  const pedestrian = pedestrians[index];
+  const pedestrianId = pedestrianIds[index];
+  const pedestrian = usePedestriansStore((state) => state.pedestriansById[pedestrianId]);
+  if (!pedestrian) {
+    return null;
+  }
+
   return (
     <li {...ariaAttributes} style={style}>
       <PedestrianListRowContent pedestrian={pedestrian} />
