@@ -4,51 +4,100 @@ import { MOOD_COLORS, MOOD_ORDER, PIE_ANIMATION_DURATION_MS } from "./constants"
 import { moodCount } from "./helpers/moodChart";
 import type { PedestrianStatsMoodCounters } from "./types";
 
+function computeMoodRatios(
+  totalCount: number,
+  moodCounters: PedestrianStatsMoodCounters,
+): number[] {
+  if (totalCount === 0) {
+    return MOOD_ORDER.map(() => 0);
+  }
+  return MOOD_ORDER.map((mood) => moodCount(mood, moodCounters) / totalCount);
+}
+
+function normalizeRatios(ratios: number[]): number[] {
+  const sum = ratios.reduce((a, b) => a + b, 0);
+  if (sum <= 0) {
+    return ratios;
+  }
+  return ratios.map((r) => r / sum);
+}
+
 interface MoodShareChartProps {
   totalCount: number;
   moodCounters: PedestrianStatsMoodCounters;
 }
 
+function moodDataSignature(moodCounters: PedestrianStatsMoodCounters, totalCount: number) {
+  return [
+    totalCount,
+    moodCounters.happyCount,
+    moodCounters.sadCount,
+    moodCounters.angryCount,
+    moodCounters.excitedCount,
+    moodCounters.scaredCount,
+    moodCounters.shockedCount,
+  ].join(",");
+}
+
 export function MoodShareChart({ totalCount, moodCounters }: MoodShareChartProps) {
-  const moodRatios = useMemo(() => {
-    if (totalCount === 0) {
-      return MOOD_ORDER.map(() => 0);
-    }
-    return MOOD_ORDER.map((mood) => moodCount(mood, moodCounters) / totalCount);
+  const { moodRatios, dataSignature } = useMemo(() => {
+    const nextRatios = computeMoodRatios(totalCount, moodCounters);
+    return {
+      moodRatios: nextRatios,
+      dataSignature: moodDataSignature(moodCounters, totalCount),
+    };
   }, [moodCounters, totalCount]);
 
   const [animatedMoodRatios, setAnimatedMoodRatios] = useState(moodRatios);
   const animatedMoodRatiosRef = useRef(animatedMoodRatios);
+  const dataSignatureRef = useRef(dataSignature);
+  const moodRatiosRef = useRef(moodRatios);
 
   useEffect(() => {
     animatedMoodRatiosRef.current = animatedMoodRatios;
   }, [animatedMoodRatios]);
 
   useEffect(() => {
+    dataSignatureRef.current = dataSignature;
+  }, [dataSignature]);
+
+  useEffect(() => {
+    moodRatiosRef.current = moodRatios;
+  }, [moodRatios]);
+
+  useEffect(() => {
     const startValues = animatedMoodRatiosRef.current;
-    const targetValues = moodRatios;
+    const targetValues = moodRatiosRef.current;
+    const runSignature = dataSignature;
     const startTime = performance.now();
 
     let rafId = 0;
     const tick = (now: number) => {
+      if (dataSignatureRef.current !== runSignature) {
+        return;
+      }
+
       const progress = Math.min((now - startTime) / PIE_ANIMATION_DURATION_MS, 1);
       const eased = 1 - (1 - progress) * (1 - progress);
 
-      const nextValues = targetValues.map((target, index) => {
-        const start = startValues[index] ?? 0;
-        return start + (target - start) * eased;
-      });
-
-      setAnimatedMoodRatios(nextValues);
-
-      if (progress < 1) {
-        rafId = window.requestAnimationFrame(tick);
+      if (progress >= 1) {
+        setAnimatedMoodRatios(targetValues);
+        return;
       }
+
+      const nextValues = normalizeRatios(
+        targetValues.map((target, index) => {
+          const start = startValues[index] ?? 0;
+          return start + (target - start) * eased;
+        }),
+      );
+      setAnimatedMoodRatios(nextValues);
+      rafId = window.requestAnimationFrame(tick);
     };
 
     rafId = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(rafId);
-  }, [moodRatios]);
+  }, [dataSignature]);
 
   const moodPieSlices = useMemo(() => {
     let cumulativeRatio = 0;
