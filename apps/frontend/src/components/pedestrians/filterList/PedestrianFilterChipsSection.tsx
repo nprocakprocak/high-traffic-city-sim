@@ -25,6 +25,15 @@ export function PedestrianFilterChipsSection({
   onSelectPace,
   onSelectThirst,
 }: PedestrianFilterChipsSectionProps) {
+  const paceAllCount =
+    selectedFilters.mood === "all" ? totalCount : getMoodCount(selectedFilters.mood, moodCounters);
+  const thirstAllCount =
+    selectedFilters.pace === "all"
+      ? paceAllCount
+      : selectedFilters.pace === "running"
+        ? paceCounters.runningCount
+        : paceCounters.walkingCount;
+
   const moodChips: PedestrianFilterChip[] = [
     { id: "all", label: `All (${totalCount})` },
     ...MOOD_ORDER.map((mood) => ({
@@ -33,12 +42,12 @@ export function PedestrianFilterChipsSection({
     })),
   ];
   const paceChips: PedestrianFilterChip[] = [
-    { id: "all", label: `All (${totalCount})` },
+    { id: "all", label: `All (${paceAllCount})` },
     { id: "running", label: `Running (${paceCounters.runningCount})` },
     { id: "walking", label: `Walking (${paceCounters.walkingCount})` },
   ];
   const thirstChips: PedestrianFilterChip[] = [
-    { id: "all", label: `All (${totalCount})` },
+    { id: "all", label: `All (${thirstAllCount})` },
     { id: "thirsty", label: `Thirsty (${thirstCounters.thirstyCount})` },
     { id: "notThirsty", label: `Not thirsty (${thirstCounters.notThirstyCount})` },
   ];

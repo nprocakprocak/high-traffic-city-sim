@@ -50,115 +50,12 @@ const DEFAULT_FILTERS: PedestrianFilterSelection = {
   thirst: "all",
 };
 
-function addPace(stats: PedestrianStatsSummary, pedestrian: Pedestrian): void {
-  if (pedestrian.velocity > RUNNING_VELOCITY_THRESHOLD) {
-    stats.pace.runningCount += 1;
-  } else {
-    stats.pace.walkingCount += 1;
-  }
+function isRunning(velocity: number): boolean {
+  return velocity > RUNNING_VELOCITY_THRESHOLD;
 }
 
-function removePace(stats: PedestrianStatsSummary, pedestrian: Pedestrian): void {
-  if (pedestrian.velocity > RUNNING_VELOCITY_THRESHOLD) {
-    stats.pace.runningCount -= 1;
-  } else {
-    stats.pace.walkingCount -= 1;
-  }
-}
-
-function addThirst(stats: PedestrianStatsSummary, pedestrian: Pedestrian): void {
-  if (pedestrian.thirst <= THIRSTY_THRESHOLD) {
-    stats.thirst.thirstyCount += 1;
-  } else {
-    stats.thirst.notThirstyCount += 1;
-  }
-}
-
-function removeThirst(stats: PedestrianStatsSummary, pedestrian: Pedestrian): void {
-  if (pedestrian.thirst <= THIRSTY_THRESHOLD) {
-    stats.thirst.thirstyCount -= 1;
-  } else {
-    stats.thirst.notThirstyCount -= 1;
-  }
-}
-
-function addMood(stats: PedestrianStatsSummary, pedestrian: Pedestrian): void {
-  switch (pedestrian.mood) {
-    case "happy":
-      stats.mood.happyCount += 1;
-      break;
-    case "sad":
-      stats.mood.sadCount += 1;
-      break;
-    case "angry":
-      stats.mood.angryCount += 1;
-      break;
-    case "excited":
-      stats.mood.excitedCount += 1;
-      break;
-    case "scared":
-      stats.mood.scaredCount += 1;
-      break;
-    case "shocked":
-      stats.mood.shockedCount += 1;
-      break;
-  }
-}
-
-function removeMood(stats: PedestrianStatsSummary, pedestrian: Pedestrian): void {
-  switch (pedestrian.mood) {
-    case "happy":
-      stats.mood.happyCount -= 1;
-      break;
-    case "sad":
-      stats.mood.sadCount -= 1;
-      break;
-    case "angry":
-      stats.mood.angryCount -= 1;
-      break;
-    case "excited":
-      stats.mood.excitedCount -= 1;
-      break;
-    case "scared":
-      stats.mood.scaredCount -= 1;
-      break;
-    case "shocked":
-      stats.mood.shockedCount -= 1;
-      break;
-  }
-}
-
-function cloneStats(source: PedestrianStatsSummary): PedestrianStatsSummary {
-  return {
-    totalCount: source.totalCount,
-    pace: { ...source.pace },
-    mood: { ...source.mood },
-    thirst: { ...source.thirst },
-  };
-}
-
-function applyAddStats(
-  source: PedestrianStatsSummary,
-  pedestrian: Pedestrian,
-): PedestrianStatsSummary {
-  const stats = cloneStats(source);
-  stats.totalCount += 1;
-  addPace(stats, pedestrian);
-  addThirst(stats, pedestrian);
-  addMood(stats, pedestrian);
-  return stats;
-}
-
-function applyRemoveStats(
-  source: PedestrianStatsSummary,
-  pedestrian: Pedestrian,
-): PedestrianStatsSummary {
-  const stats = cloneStats(source);
-  stats.totalCount -= 1;
-  removePace(stats, pedestrian);
-  removeThirst(stats, pedestrian);
-  removeMood(stats, pedestrian);
-  return stats;
+function isThirsty(thirst: number): boolean {
+  return thirst <= THIRSTY_THRESHOLD;
 }
 
 function nextMapDisplayedPedestrianIds(pedestrianIds: string[]): string[] {
@@ -203,6 +100,90 @@ function nextFilteredPedestrianIds(
   });
 }
 
+function nextStats(
+  pedestrianIds: string[],
+  pedestriansById: Record<string, Pedestrian>,
+  selectedFilters: PedestrianFilterSelection,
+): PedestrianStatsSummary {
+  const stats: PedestrianStatsSummary = {
+    totalCount: 0,
+    pace: {
+      runningCount: 0,
+      walkingCount: 0,
+    },
+    mood: {
+      happyCount: 0,
+      sadCount: 0,
+      angryCount: 0,
+      excitedCount: 0,
+      scaredCount: 0,
+      shockedCount: 0,
+    },
+    thirst: {
+      thirstyCount: 0,
+      notThirstyCount: 0,
+    },
+  };
+
+  for (const id of pedestrianIds) {
+    const pedestrian = pedestriansById[id];
+    if (!pedestrian) {
+      continue;
+    }
+
+    stats.totalCount += 1;
+
+    switch (pedestrian.mood) {
+      case "happy":
+        stats.mood.happyCount += 1;
+        break;
+      case "sad":
+        stats.mood.sadCount += 1;
+        break;
+      case "angry":
+        stats.mood.angryCount += 1;
+        break;
+      case "excited":
+        stats.mood.excitedCount += 1;
+        break;
+      case "scared":
+        stats.mood.scaredCount += 1;
+        break;
+      case "shocked":
+        stats.mood.shockedCount += 1;
+        break;
+    }
+
+    const moodMatches = selectedFilters.mood === "all" || pedestrian.mood === selectedFilters.mood;
+    if (!moodMatches) {
+      continue;
+    }
+
+    if (isRunning(pedestrian.velocity)) {
+      stats.pace.runningCount += 1;
+    } else {
+      stats.pace.walkingCount += 1;
+    }
+
+    const paceMatches =
+      selectedFilters.pace === "all" ||
+      (selectedFilters.pace === "running"
+        ? isRunning(pedestrian.velocity)
+        : !isRunning(pedestrian.velocity));
+    if (!paceMatches) {
+      continue;
+    }
+
+    if (isThirsty(pedestrian.thirst)) {
+      stats.thirst.thirstyCount += 1;
+    } else {
+      stats.thirst.notThirstyCount += 1;
+    }
+  }
+
+  return stats;
+}
+
 export const usePedestriansStore = create<PedestriansState>((set) => ({
   pedestrianIds: [],
   filteredPedestrianIds: [],
@@ -218,6 +199,7 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
         state.pedestriansById,
         filters,
       ),
+      stats: nextStats(state.pedestrianIds, state.pedestriansById, filters),
     })),
   addPedestrians: (incoming) =>
     set((state) => {
@@ -230,11 +212,8 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
       }
 
       const newIdOrder: string[] = [];
-      let nextStats = cloneStats(state.stats);
-
       for (const p of incoming) {
         newIdOrder.push(p.id);
-        nextStats = applyAddStats(nextStats, p);
       }
 
       const nextPedestrianIds = [...state.pedestrianIds, ...newIdOrder];
@@ -248,7 +227,7 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
         ),
         mapDisplayedPedestrianIds: nextMapDisplayedPedestrianIds(nextPedestrianIds),
         pedestriansById: nextById,
-        stats: nextStats,
+        stats: nextStats(nextPedestrianIds, nextById, state.selectedFilters),
       };
     }),
   updatePedestrians: (items) =>
@@ -258,7 +237,6 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
       }
 
       const nextById: Record<string, Pedestrian> = { ...state.pedestriansById };
-      let nextStats: PedestrianStatsSummary = cloneStats(state.stats);
 
       for (const { id, updates } of items) {
         const current = nextById[id];
@@ -266,36 +244,11 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
           continue;
         }
 
-        // anyUpdated = true;
         const nextPedestrian: Pedestrian = {
           ...current,
           ...updates,
         };
-        const paceChanged =
-          current.velocity > RUNNING_VELOCITY_THRESHOLD !==
-          nextPedestrian.velocity > RUNNING_VELOCITY_THRESHOLD;
-        const thirstChanged =
-          current.thirst <= THIRSTY_THRESHOLD !== nextPedestrian.thirst <= THIRSTY_THRESHOLD;
-        const moodChanged = current.mood !== nextPedestrian.mood;
-
         nextById[id] = nextPedestrian;
-
-        if (!paceChanged && !thirstChanged && !moodChanged) {
-          continue;
-        }
-
-        if (paceChanged) {
-          removePace(nextStats, current);
-          addPace(nextStats, nextPedestrian);
-        }
-        if (thirstChanged) {
-          removeThirst(nextStats, current);
-          addThirst(nextStats, nextPedestrian);
-        }
-        if (moodChanged) {
-          removeMood(nextStats, current);
-          addMood(nextStats, nextPedestrian);
-        }
       }
 
       return {
@@ -305,7 +258,7 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
           nextById,
           state.selectedFilters,
         ),
-        stats: nextStats,
+        stats: nextStats(state.pedestrianIds, nextById, state.selectedFilters),
       };
     }),
   removePedestrians: (ids) =>
@@ -315,7 +268,6 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
       }
       const toRemove = new Set(ids);
       const nextById: Record<string, Pedestrian> = { ...state.pedestriansById };
-      let nextStats: PedestrianStatsSummary = state.stats;
 
       for (const id of toRemove) {
         const current = nextById[id];
@@ -323,7 +275,6 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
           continue;
         }
         delete nextById[id];
-        nextStats = applyRemoveStats(nextStats, current);
       }
 
       const nextPedestrianIds = state.pedestrianIds.filter(
@@ -339,7 +290,7 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
         ),
         mapDisplayedPedestrianIds: nextMapDisplayedPedestrianIds(nextPedestrianIds),
         pedestriansById: nextById,
-        stats: nextStats,
+        stats: nextStats(nextPedestrianIds, nextById, state.selectedFilters),
       };
     }),
 }));
