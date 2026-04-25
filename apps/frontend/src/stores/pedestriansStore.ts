@@ -5,6 +5,7 @@ import {
   RUNNING_VELOCITY_THRESHOLD,
   THIRSTY_THRESHOLD,
 } from "../constants";
+import type { PedestrianFilterSelection } from "../components/pedestrians/filterList/types";
 import type { PedestrianStatsSummary } from "../types/pedestrianStats";
 
 export type PedestrianFieldUpdates = Partial<Omit<Pedestrian, "id">>;
@@ -15,6 +16,8 @@ interface PedestriansState {
   mapDisplayedPedestrianIds: string[];
   pedestriansById: Record<string, Pedestrian>;
   stats: PedestrianStatsSummary;
+  selectedFilters: PedestrianFilterSelection;
+  setSelectedFilters: (filters: PedestrianFilterSelection) => void;
   addPedestrians: (pedestrians: Pedestrian[]) => void;
   updatePedestrians: (items: PedestrianUpdate[]) => void;
   removePedestrians: (ids: string[]) => void;
@@ -38,6 +41,12 @@ const EMPTY_STATS: PedestrianStatsSummary = {
     thirstyCount: 0,
     notThirstyCount: 0,
   },
+};
+
+const DEFAULT_FILTERS: PedestrianFilterSelection = {
+  mood: "all",
+  pace: "all",
+  thirst: "all",
 };
 
 function addPace(stats: PedestrianStatsSummary, pedestrian: Pedestrian): void {
@@ -127,7 +136,10 @@ function cloneStats(source: PedestrianStatsSummary): PedestrianStatsSummary {
   };
 }
 
-function applyAddStats(source: PedestrianStatsSummary, pedestrian: Pedestrian): PedestrianStatsSummary {
+function applyAddStats(
+  source: PedestrianStatsSummary,
+  pedestrian: Pedestrian,
+): PedestrianStatsSummary {
   const stats = cloneStats(source);
   stats.totalCount += 1;
   addPace(stats, pedestrian);
@@ -160,6 +172,8 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
   mapDisplayedPedestrianIds: [],
   pedestriansById: {},
   stats: EMPTY_STATS,
+  selectedFilters: DEFAULT_FILTERS,
+  setSelectedFilters: (filters) => set({ selectedFilters: filters }),
   addPedestrians: (incoming) =>
     set((state) => {
       if (incoming.length === 0) {
@@ -220,10 +234,10 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
           ...updates,
         };
         const paceChanged =
-          (current.velocity > RUNNING_VELOCITY_THRESHOLD) !==
-          (nextPedestrian.velocity > RUNNING_VELOCITY_THRESHOLD);
+          current.velocity > RUNNING_VELOCITY_THRESHOLD !==
+          nextPedestrian.velocity > RUNNING_VELOCITY_THRESHOLD;
         const thirstChanged =
-          (current.thirst <= THIRSTY_THRESHOLD) !== (nextPedestrian.thirst <= THIRSTY_THRESHOLD);
+          current.thirst <= THIRSTY_THRESHOLD !== nextPedestrian.thirst <= THIRSTY_THRESHOLD;
         const moodChanged = current.mood !== nextPedestrian.mood;
 
         nextById[id] = nextPedestrian;
