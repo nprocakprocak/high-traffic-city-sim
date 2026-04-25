@@ -9,7 +9,9 @@ interface PedestrianListRowContentProps {
 
 export function PedestrianListRowContent({ pedestrian }: PedestrianListRowContentProps) {
   return (
-    <div className={`${ROW_GRID} border-b border-stone-200/60 py-1 text-sm last:border-0`}>
+    <div
+      className={`${ROW_GRID} border-b border-stone-200/60 py-1 text-sm hover:bg-violet-50/70 last:border-0`}
+    >
       <span
         className="flex h-7 w-7 select-none items-center justify-center rounded-md border border-stone-200/80 bg-stone-50/90 text-sm leading-none"
         aria-hidden
