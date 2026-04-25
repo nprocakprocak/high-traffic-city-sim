@@ -6,9 +6,6 @@ interface PedestriansLayerProps {
   onPedestrianStop: (id: string) => void;
 }
 
-const selectPedestrianIds = (state: ReturnType<typeof usePedestriansStore.getState>) =>
-  state.pedestrianIds;
-
 interface PedestrianIconFromStoreProps {
   id: string;
   onPedestrianStop: (id: string) => void;
@@ -27,11 +24,11 @@ const PedestrianIconFromStore = memo(function PedestrianIconFromStore({
 });
 
 export function PedestriansLayer({ onPedestrianStop }: PedestriansLayerProps) {
-  const pedestrianIds = usePedestriansStore(selectPedestrianIds);
+  const mapPedestrianIds = usePedestriansStore((s) => s.mapDisplayedPedestrianIds);
 
   return (
     <div className="absolute inset-0 pointer-events-none">
-      {pedestrianIds.map((id) => (
+      {mapPedestrianIds.map((id) => (
         <PedestrianIconFromStore key={id} id={id} onPedestrianStop={onPedestrianStop} />
       ))}
     </div>

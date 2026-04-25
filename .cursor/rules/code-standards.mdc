@@ -13,3 +13,4 @@ alwaysApply: true
 - Use clear naming (PascalCase for components, camelCase for variables, UPPER_SNAKE_CASE for constants).
 - Avoid deeply nested logic.
 - Write clean, readable, self-documenting code.
+- Don't use comments at all if not asked by user.

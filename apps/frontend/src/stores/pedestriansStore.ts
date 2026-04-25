@@ -1,5 +1,6 @@
 import type { Pedestrian } from "@high-traffic-city-sim/types";
 import { create } from "zustand";
+import { MAP_MAX_DISPLAYED_PEDESTRIANS } from "../constants";
 
 const RUNNING_VELOCITY_THRESHOLD = 5;
 const THIRSTY_THRESHOLD = 4;
@@ -32,6 +33,7 @@ export interface PedestrianStatsSummary {
 
 interface PedestriansState {
   pedestrianIds: string[];
+  mapDisplayedPedestrianIds: string[];
   pedestriansById: Record<string, Pedestrian>;
   stats: PedestrianStatsSummary;
   addPedestrian: (pedestrian: Pedestrian) => void;
@@ -167,8 +169,16 @@ function applyRemoveStats(
   return stats;
 }
 
+function nextMapDisplayedPedestrianIds(pedestrianIds: string[]): string[] {
+  if (pedestrianIds.length <= MAP_MAX_DISPLAYED_PEDESTRIANS) {
+    return pedestrianIds;
+  }
+  return pedestrianIds.slice(-MAP_MAX_DISPLAYED_PEDESTRIANS);
+}
+
 export const usePedestriansStore = create<PedestriansState>((set) => ({
   pedestrianIds: [],
+  mapDisplayedPedestrianIds: [],
   pedestriansById: {},
   stats: EMPTY_STATS,
   addPedestrian: (pedestrian) =>
@@ -183,8 +193,11 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
         };
       }
 
+      const nextPedestrianIds = [...state.pedestrianIds, pedestrian.id];
+
       return {
-        pedestrianIds: [...state.pedestrianIds, pedestrian.id],
+        pedestrianIds: nextPedestrianIds,
+        mapDisplayedPedestrianIds: nextMapDisplayedPedestrianIds(nextPedestrianIds),
         pedestriansById: {
           ...state.pedestriansById,
           [pedestrian.id]: pedestrian,
@@ -251,8 +264,13 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
       const nextById = { ...state.pedestriansById };
       delete nextById[id];
 
+      const nextPedestrianIds = state.pedestrianIds.filter(
+        (pedestrianId) => pedestrianId !== id,
+      );
+
       return {
-        pedestrianIds: state.pedestrianIds.filter((pedestrianId) => pedestrianId !== id),
+        pedestrianIds: nextPedestrianIds,
+        mapDisplayedPedestrianIds: nextMapDisplayedPedestrianIds(nextPedestrianIds),
         pedestriansById: nextById,
         stats: applyRemoveStats(state.stats, current),
       };
