@@ -34,7 +34,9 @@ export function StatsSpawnColumn({
         </p>
         <SpawnIntervalSlider value={spawnIntervalMult} onChange={onSpawnIntChange} />
         <p className="text-xs leading-relaxed text-gray-500">
-          Pedestrians are added, updated, and removed in real time via WebSocket. Each pedestrian follows a randomly generated path, randomly walking or running. Each is assigned a random mood and gradually becomes thirsty over time.
+          Pedestrians are added, updated, and removed in real time via WebSocket. Each pedestrian
+          follows a randomly generated path, randomly walking or running. Each is assigned a random
+          mood and gradually becomes thirsty over time.
         </p>
         <p className="rounded-md border border-blue-200/90 bg-blue-50/85 px-3 py-2 text-sm font-medium text-blue-900/80">
           Buffering WebSocket messages:{" "}
