@@ -1,30 +1,11 @@
 import { Pedestrian } from "@high-traffic-city-sim/types";
 import { useMemo } from "react";
+import { RUNNING_VELOCITY_THRESHOLD, THIRSTY_THRESHOLD } from "../constants";
+import type { PedestrianStatsSummary } from "../types/pedestrianStats";
 
-const RUNNING_VELOCITY_THRESHOLD = 5;
-const THIRSTY_THRESHOLD = 4;
-
-export interface PedestrianStats {
-  totalCount: number;
-  pace: {
-    runningCount: number;
-    walkingCount: number;
-  };
-  mood: {
-    happyCount: number;
-    sadCount: number;
-    angryCount: number;
-    excitedCount: number;
-    scaredCount: number;
-    shockedCount: number;
-  };
-  thirst: {
-    thirstyCount: number;
-    notThirstyCount: number;
-  };
-}
-
-export function usePedestrianStats(pedestriansMap: Map<string, Pedestrian>): PedestrianStats {
+export function usePedestrianStats(
+  pedestriansMap: Map<string, Pedestrian>,
+): PedestrianStatsSummary {
   return useMemo(() => {
     const total = pedestriansMap.size;
     if (total === 0) {

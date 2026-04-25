@@ -1,6 +1,6 @@
 import { MoodShareSection } from "./MoodShareSection";
 import { PaceShareSection } from "./PaceShareSection";
-import type { PedestrianStatsMoodCounters } from "./types";
+import type { PedestrianStatsMoodCounters } from "../../../types/pedestrianStats";
 
 interface PedestrianChartsColumnProps {
   totalCount: number;

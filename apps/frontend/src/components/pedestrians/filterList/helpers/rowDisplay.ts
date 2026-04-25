@@ -1,4 +1,4 @@
-import { RUNNING_VELOCITY_THRESHOLD, THIRSTY_THRESHOLD } from "../constants";
+import { RUNNING_VELOCITY_THRESHOLD, THIRSTY_THRESHOLD } from "../../../../constants";
 
 export function isRunning(velocity: number): boolean {
   return velocity > RUNNING_VELOCITY_THRESHOLD;

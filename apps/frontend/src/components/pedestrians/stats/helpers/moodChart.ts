@@ -1,5 +1,5 @@
 import type { Pedestrian } from "@high-traffic-city-sim/types";
-import { PedestrianStatsMoodCounters } from "../types";
+import type { PedestrianStatsMoodCounters } from "../../../../types/pedestrianStats";
 
 export function moodLabel(mood: Pedestrian["mood"]): string {
   const labels: Record<Pedestrian["mood"], string> = {

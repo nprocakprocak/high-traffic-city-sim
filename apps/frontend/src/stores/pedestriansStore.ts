@@ -1,35 +1,11 @@
 import type { Pedestrian } from "@high-traffic-city-sim/types";
 import { create } from "zustand";
-import { MAP_MAX_DISPLAYED_PEDESTRIANS } from "../constants";
-
-const RUNNING_VELOCITY_THRESHOLD = 5;
-const THIRSTY_THRESHOLD = 4;
-
-export interface PedestrianStatsMoodCounters {
-  happyCount: number;
-  sadCount: number;
-  angryCount: number;
-  excitedCount: number;
-  scaredCount: number;
-  shockedCount: number;
-}
-
-export interface PedestrianStatsPaceCounters {
-  runningCount: number;
-  walkingCount: number;
-}
-
-export interface PedestrianStatsThirstCounters {
-  thirstyCount: number;
-  notThirstyCount: number;
-}
-
-export interface PedestrianStatsSummary {
-  totalCount: number;
-  pace: PedestrianStatsPaceCounters;
-  mood: PedestrianStatsMoodCounters;
-  thirst: PedestrianStatsThirstCounters;
-}
+import {
+  MAP_MAX_DISPLAYED_PEDESTRIANS,
+  RUNNING_VELOCITY_THRESHOLD,
+  THIRSTY_THRESHOLD,
+} from "../constants";
+import type { PedestrianStatsSummary } from "../types/pedestrianStats";
 
 export type PedestrianFieldUpdates = Partial<Omit<Pedestrian, "id">>;
 export type PedestrianUpdate = { id: string; updates: PedestrianFieldUpdates };

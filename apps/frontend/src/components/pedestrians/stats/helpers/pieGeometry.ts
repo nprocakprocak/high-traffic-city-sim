@@ -1,7 +1,7 @@
 import type { Pedestrian } from "@high-traffic-city-sim/types";
 import { MOOD_COLORS, MOOD_ORDER, PIE_CENTER, PIE_RADIUS } from "../constants";
 import { moodCount } from "./moodChart";
-import type { PedestrianStatsMoodCounters } from "../types";
+import type { PedestrianStatsMoodCounters } from "../../../../types/pedestrianStats";
 
 const TAU = 2 * Math.PI;
 const CENTER = PIE_CENTER;

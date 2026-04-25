@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { PIE_CENTER, PIE_RADIUS } from "./constants";
 import { buildMoodPieSlices } from "./helpers/pieGeometry";
-import type { PedestrianStatsMoodCounters } from "./types";
+import type { PedestrianStatsMoodCounters } from "../../../types/pedestrianStats";
 
 const EMPTY_PIE_FILL = "rgb(229 231 235)"; // tailwind gray-200, matches neutral empty state
 

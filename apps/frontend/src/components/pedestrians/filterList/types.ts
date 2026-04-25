@@ -1,21 +1,15 @@
+import type { Pedestrian } from "@high-traffic-city-sim/types";
+import type {
+  PedestrianStatsMoodCounters,
+  PedestrianStatsPaceCounters,
+  PedestrianStatsThirstCounters,
+} from "../../../types/pedestrianStats";
+
 export interface PedestrianFilterListProps {
   totalCount: number;
-  paceCounters: {
-    runningCount: number;
-    walkingCount: number;
-  };
-  moodCounters: {
-    happyCount: number;
-    sadCount: number;
-    angryCount: number;
-    excitedCount: number;
-    scaredCount: number;
-    shockedCount: number;
-  };
-  thirstCounters: {
-    thirstyCount: number;
-    notThirstyCount: number;
-  };
+  paceCounters: PedestrianStatsPaceCounters;
+  moodCounters: PedestrianStatsMoodCounters;
+  thirstCounters: PedestrianStatsThirstCounters;
 }
 
 export type MoodCountersShape = PedestrianFilterListProps["moodCounters"];
@@ -25,7 +19,12 @@ export interface PedestrianRowListProps {
 }
 
 export interface PedestrianFilterSelection {
-  mood: "all" | "happy" | "sad" | "angry" | "excited" | "scared" | "shocked";
+  mood: "all" | Pedestrian["mood"];
   pace: "all" | "running" | "walking";
   thirst: "all" | "thirsty" | "notThirsty";
+}
+
+export interface PedestrianFilterChip {
+  id: string;
+  label: string;
 }

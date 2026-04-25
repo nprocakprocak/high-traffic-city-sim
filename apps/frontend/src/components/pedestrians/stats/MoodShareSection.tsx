@@ -3,7 +3,7 @@ import { MOOD_ORDER } from "./constants";
 import { moodCount } from "./helpers/moodChart";
 import { MoodShareChart } from "./MoodShareChart";
 import { MoodShareLegend } from "./MoodShareLegend";
-import type { PedestrianStatsMoodCounters } from "./types";
+import type { PedestrianStatsMoodCounters } from "../../../types/pedestrianStats";
 
 interface MoodShareSectionProps {
   totalCount: number;

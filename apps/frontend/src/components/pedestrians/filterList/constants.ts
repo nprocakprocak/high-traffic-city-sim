@@ -18,9 +18,6 @@ export const MOOD_ORDER: Pedestrian["mood"][] = [
   "shocked",
 ];
 
-export const RUNNING_VELOCITY_THRESHOLD = 5;
-export const THIRSTY_THRESHOLD = 4;
-
 export const LIST_HEIGHT = 544;
 export const ROW_HEIGHT = 40;
 export const OVERSCAN_COUNT = 6;

@@ -2,17 +2,22 @@ import type { Pedestrian } from "@high-traffic-city-sim/types";
 import { FilterChips } from "./FilterChips";
 import { MOOD_LABEL, MOOD_ORDER } from "./constants";
 import { getMoodCount } from "./helpers/moodCount";
-import type { PedestrianFilterListProps, PedestrianFilterSelection } from "./types";
-
-type PedestrianFilterChipsSectionProps = Pick<
+import type {
+  PedestrianFilterChip,
   PedestrianFilterListProps,
-  "totalCount" | "paceCounters" | "moodCounters" | "thirstCounters"
-> & {
+  PedestrianFilterSelection,
+} from "./types";
+
+interface PedestrianFilterChipsSectionProps
+  extends Pick<
+    PedestrianFilterListProps,
+    "totalCount" | "paceCounters" | "moodCounters" | "thirstCounters"
+  > {
   selectedFilters: PedestrianFilterSelection;
   onSelectMood: (mood: PedestrianFilterSelection["mood"]) => void;
   onSelectPace: (pace: PedestrianFilterSelection["pace"]) => void;
   onSelectThirst: (thirst: PedestrianFilterSelection["thirst"]) => void;
-};
+}
 
 export function PedestrianFilterChipsSection({
   totalCount,
@@ -24,19 +29,19 @@ export function PedestrianFilterChipsSection({
   onSelectPace,
   onSelectThirst,
 }: PedestrianFilterChipsSectionProps) {
-  const moodChips: { id: "all" | Pedestrian["mood"]; label: string }[] = [
+  const moodChips: PedestrianFilterChip[] = [
     { id: "all", label: `All (${totalCount})` },
     ...MOOD_ORDER.map((mood) => ({
       id: mood,
       label: `${MOOD_LABEL[mood]} (${getMoodCount(mood, moodCounters)})`,
     })),
   ];
-  const paceChips: { id: "all" | "running" | "walking"; label: string }[] = [
+  const paceChips: PedestrianFilterChip[] = [
     { id: "all", label: `All (${totalCount})` },
     { id: "running", label: `Running (${paceCounters.runningCount})` },
     { id: "walking", label: `Walking (${paceCounters.walkingCount})` },
   ];
-  const thirstChips: { id: "all" | "thirsty" | "notThirsty"; label: string }[] = [
+  const thirstChips: PedestrianFilterChip[] = [
     { id: "all", label: `All (${totalCount})` },
     { id: "thirsty", label: `Thirsty (${thirstCounters.thirstyCount})` },
     { id: "notThirsty", label: `Not thirsty (${thirstCounters.notThirstyCount})` },

@@ -38,7 +38,7 @@ export function CityMap({ cityGrid, onPedestrianStop }: CityMapProps) {
           className="pointer-events-none absolute bottom-0 right-0 z-10 max-w-[min(100%,18rem)] bg-stone-100/95 px-2 py-1.5 text-right text-[10px] leading-tight text-stone-600 sm:text-xs"
           role="status"
         >
-          The map only displays the last {MAP_MAX_DISPLAYED_PEDESTRIANS} pedestrians.
+          The city map displays only the last {MAP_MAX_DISPLAYED_PEDESTRIANS} pedestrians.
         </p>
       ) : null}
     </div>
