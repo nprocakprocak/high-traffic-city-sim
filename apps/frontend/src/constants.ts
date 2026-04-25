@@ -7,6 +7,9 @@ export const CITY_GRID_COLS = 50;
 
 export const MAP_MAX_DISPLAYED_PEDESTRIANS = 200;
 
+export const PEDESTRIAN_WEBSOCKET_BUFFERING_THRESHOLD = 1500;
+export const PEDESTRIAN_WEBSOCKET_BUFFER_FLUSH_MS = 200;
+
 export const MOOD_EMOJI_MAP: Record<Pedestrian["mood"], string> = {
   happy: "🙂",
   sad: "😢",

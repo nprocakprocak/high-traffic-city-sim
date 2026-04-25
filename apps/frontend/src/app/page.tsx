@@ -16,10 +16,11 @@ import { convertGridPathToPixelPoints, findPath } from "../utils/pathFinder";
 export default function HomePage() {
   const [cityGrid, setCityGrid] = useState<CityCell[][]>([]);
   const [roadPositions, setRoadPositions] = useState<GridPosition[]>([]);
-  const { updatePedestrians, error, setSpawnInterval } = usePedestrians({
+  const { updatePedestrians, error, setSpawnInterval, isWebSocketEventBufferingEnabled } =
+    usePedestrians({
     cityGrid,
     roadPositions,
-  });
+    });
   const pedestriansStoreRef = useRef(usePedestriansStore);
 
   const newDestination = useCallback(
@@ -70,7 +71,10 @@ export default function HomePage() {
             </section>
 
             <div className="w-full min-w-0 max-w-full">
-              <PedestrianStatsPanel onSpawnIntervalChange={setSpawnInterval} />
+              <PedestrianStatsPanel
+                onSpawnIntervalChange={setSpawnInterval}
+                isWebSocketEventBufferingEnabled={isWebSocketEventBufferingEnabled}
+              />
             </div>
           </div>
 

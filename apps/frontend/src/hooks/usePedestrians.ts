@@ -1,5 +1,6 @@
 import { Pedestrian } from "@high-traffic-city-sim/types";
 import { useCallback } from "react";
+import { PEDESTRIAN_WEBSOCKET_BUFFERING_THRESHOLD } from "../constants";
 import { usePedestriansStore } from "../stores/pedestriansStore";
 import { CityCell, GridPosition } from "../types/cell";
 import { getRandomRoadPosition } from "../utils/cityRoads";
@@ -15,6 +16,9 @@ export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps)
   const addPedestrians = usePedestriansStore((state) => state.addPedestrians);
   const removePedestrians = usePedestriansStore((state) => state.removePedestrians);
   const updatePedestrians = usePedestriansStore((state) => state.updatePedestrians);
+  const pedestrianCount = usePedestriansStore((state) => state.pedestrianIds.length);
+  const isWebSocketEventBufferingEnabled =
+    pedestrianCount > PEDESTRIAN_WEBSOCKET_BUFFERING_THRESHOLD;
 
   const onNewPedestrians = useCallback(
     (sockPedestrians: Pedestrian[]) => {
@@ -52,11 +56,13 @@ export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps)
     onNewPedestrians,
     removePedestrians,
     updatePedestrians,
+    { isBufferingEnabled: isWebSocketEventBufferingEnabled },
   );
 
   return {
     updatePedestrians,
     error,
     setSpawnInterval,
+    isWebSocketEventBufferingEnabled,
   };
 }

@@ -4,9 +4,14 @@ import { SpawnIntervalSlider } from "./SpawnIntervalSlider";
 interface StatsSpawnColumnProps {
   totalCount: number;
   onSpawnIntervalChange: (value: number) => void;
+  isWebSocketEventBufferingEnabled: boolean;
 }
 
-export function StatsSpawnColumn({ totalCount, onSpawnIntervalChange }: StatsSpawnColumnProps) {
+export function StatsSpawnColumn({
+  totalCount,
+  onSpawnIntervalChange,
+  isWebSocketEventBufferingEnabled,
+}: StatsSpawnColumnProps) {
   const [spawnIntervalMult, setSpawnIntervalMultState] = useState(16);
 
   const onSpawnIntChange = useCallback(
@@ -29,7 +34,17 @@ export function StatsSpawnColumn({ totalCount, onSpawnIntervalChange }: StatsSpa
         </p>
         <SpawnIntervalSlider value={spawnIntervalMult} onChange={onSpawnIntChange} />
         <p className="text-xs leading-relaxed text-gray-500">
-          Pedestrians are updated live over WebSocket.
+          Pedestrians are added/updated/removed live over WebSocket.
+        </p>
+        <p className="rounded-md border border-blue-200/90 bg-blue-50/85 px-3 py-2 text-sm font-medium text-blue-900/80">
+          Buffering WebSocket messages:{" "}
+          <span
+            className={
+              isWebSocketEventBufferingEnabled ? "font-semibold text-emerald-600" : "font-semibold text-red-600"
+            }
+          >
+            {isWebSocketEventBufferingEnabled ? "On" : "Off"}
+          </span>
         </p>
       </div>
     </div>
