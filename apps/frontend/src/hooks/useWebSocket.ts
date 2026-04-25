@@ -3,20 +3,20 @@ import { io, Socket } from "socket.io-client";
 import { Pedestrian } from "@high-traffic-city-sim/types";
 
 export function useWebSocket(
-  onNewPedestrian: (pedestrian: Pedestrian) => void,
+  onNewPedestrians: (pedestrians: Pedestrian[]) => void,
   onRemovePedestrian: (id: string) => void,
   onUpdatePedestrian: (id: string, updates: Partial<Omit<Pedestrian, "id">>) => void,
 ) {
   const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const socketRef = useRef<Socket | null>(null);
-  const onNewPedestrianRef = useRef(onNewPedestrian);
+  const onNewPedestriansRef = useRef(onNewPedestrians);
   const onRemovePedestrianRef = useRef(onRemovePedestrian);
   const onUpdatePedestrianRef = useRef(onUpdatePedestrian);
 
   useEffect(() => {
-    onNewPedestrianRef.current = onNewPedestrian;
-  }, [onNewPedestrian]);
+    onNewPedestriansRef.current = onNewPedestrians;
+  }, [onNewPedestrians]);
 
   useEffect(() => {
     onRemovePedestrianRef.current = onRemovePedestrian;
@@ -44,9 +44,7 @@ export function useWebSocket(
     });
 
     newSocket.on("pedestrians", (pedestrians: Pedestrian[]) => {
-      for (const pedestrian of pedestrians) {
-        onNewPedestrianRef.current(pedestrian);
-      }
+      onNewPedestriansRef.current(pedestrians);
     });
 
     newSocket.on("remove_pedestrian", (id: string) => {

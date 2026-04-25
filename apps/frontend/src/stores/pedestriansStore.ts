@@ -37,6 +37,7 @@ interface PedestriansState {
   pedestriansById: Record<string, Pedestrian>;
   stats: PedestrianStatsSummary;
   addPedestrian: (pedestrian: Pedestrian) => void;
+  addPedestrians: (pedestrians: Pedestrian[]) => void;
   updatePedestrian: (id: string, updates: Partial<Omit<Pedestrian, "id">>) => void;
   removePedestrian: (id: string) => void;
 }
@@ -203,6 +204,45 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
           [pedestrian.id]: pedestrian,
         },
         stats: applyAddStats(state.stats, pedestrian),
+      };
+    }),
+  addPedestrians: (incoming) =>
+    set((state) => {
+      if (incoming.length === 0) {
+        return state;
+      }
+      const nextById: Record<string, Pedestrian> = { ...state.pedestriansById };
+      for (const p of incoming) {
+        nextById[p.id] = p;
+      }
+
+      const hadInBatch = new Set<string>();
+      const newIdOrder: string[] = [];
+      let nextStats = cloneStats(state.stats);
+
+      for (const p of incoming) {
+        if (state.pedestriansById[p.id]) {
+          continue;
+        }
+        if (hadInBatch.has(p.id)) {
+          continue;
+        }
+        hadInBatch.add(p.id);
+        newIdOrder.push(p.id);
+        nextStats = applyAddStats(nextStats, p);
+      }
+
+      if (newIdOrder.length === 0) {
+        return { pedestriansById: nextById };
+      }
+
+      const nextPedestrianIds = [...state.pedestrianIds, ...newIdOrder];
+
+      return {
+        pedestrianIds: nextPedestrianIds,
+        mapDisplayedPedestrianIds: nextMapDisplayedPedestrianIds(nextPedestrianIds),
+        pedestriansById: nextById,
+        stats: nextStats,
       };
     }),
   updatePedestrian: (id, updates) =>

@@ -12,35 +12,44 @@ interface UsePedestriansProps {
 }
 
 export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps) {
-  const addPedestrian = usePedestriansStore((state) => state.addPedestrian);
+  const addPedestrians = usePedestriansStore((state) => state.addPedestrians);
   const removePedestrian = usePedestriansStore((state) => state.removePedestrian);
   const updatePedestrian = usePedestriansStore((state) => state.updatePedestrian);
 
-  const onNewPedestrian = useCallback(
-    (sockPedestrian: Pedestrian) => {
-      const startPosition = getRandomRoadPosition(roadPositions);
-      const destination = getRandomRoadPosition(roadPositions);
-
-      if (!startPosition || !destination) {
+  const onNewPedestrians = useCallback(
+    (sockPedestrians: Pedestrian[]) => {
+      if (sockPedestrians.length === 0) {
         return;
       }
 
-      const path = findPath(cityGrid, startPosition, destination);
-      const pathPoints = convertGridPathToPixelPoints(path);
+      const withPaths: Pedestrian[] = [];
+      for (const sockPedestrian of sockPedestrians) {
+        const startPosition = getRandomRoadPosition(roadPositions);
+        const destination = getRandomRoadPosition(roadPositions);
 
-      const pedestrian: Pedestrian = {
-        ...sockPedestrian,
-        pathPoints,
-        destination,
-      };
+        if (!startPosition || !destination) {
+          continue;
+        }
 
-      addPedestrian(pedestrian);
+        const path = findPath(cityGrid, startPosition, destination);
+        const pathPoints = convertGridPathToPixelPoints(path);
+
+        withPaths.push({
+          ...sockPedestrian,
+          pathPoints,
+          destination,
+        });
+      }
+
+      if (withPaths.length > 0) {
+        addPedestrians(withPaths);
+      }
     },
-    [addPedestrian, cityGrid, roadPositions],
+    [addPedestrians, cityGrid, roadPositions],
   );
 
   const { error, setSpawnInterval } = useWebSocket(
-    onNewPedestrian,
+    onNewPedestrians,
     removePedestrian,
     updatePedestrian,
   );
