@@ -229,7 +229,7 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
         return state;
       }
 
-      let nextById: Record<string, Pedestrian> = { ...state.pedestriansById };
+      const nextById: Record<string, Pedestrian> = { ...state.pedestriansById };
       let nextStats: PedestrianStatsSummary = cloneStats(state.stats);
 
       for (const { id, updates } of items) {
@@ -250,7 +250,7 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
           (current.thirst <= THIRSTY_THRESHOLD) !== (nextPedestrian.thirst <= THIRSTY_THRESHOLD);
         const moodChanged = current.mood !== nextPedestrian.mood;
 
-        nextById = { ...nextById, [id]: nextPedestrian };
+        nextById[id] = nextPedestrian;
 
         if (!paceChanged && !thirstChanged && !moodChanged) {
           continue;
