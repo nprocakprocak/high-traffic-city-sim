@@ -60,7 +60,7 @@ export class PedestrianService {
       name: this.NAMES[Math.floor(Math.random() * this.NAMES.length)],
       mood: this.randomMood(),
       velocity: this.randomVelocity(),
-      thirst: Math.floor(Math.random() * 3) + 8 // 8-10
+      thirst: Math.floor(Math.random() * 3) + 18 // 18-20
     };
   }
 }

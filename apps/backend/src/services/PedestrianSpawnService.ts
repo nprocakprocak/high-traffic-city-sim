@@ -23,13 +23,13 @@ export class PedestrianSpawnService {
 
   static batchSizeForMultiplier(multiplier: number): number {
     if (multiplier >= 1 && multiplier <= 2) {
-      return 5;
+      return 10;
     }
     if (multiplier >= 3 && multiplier <= 5) {
-      return 4;
+      return 8;
     }
     if (multiplier >= 6 && multiplier <= 9) {
-      return 3;
+      return 4;
     }
     if (multiplier >= 10 && multiplier <= 15) {
       return 2;

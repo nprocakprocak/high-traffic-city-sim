@@ -10,7 +10,7 @@ export const MAP_MAX_DISPLAYED_PEDESTRIANS = 200;
 export const PEDESTRIAN_WEBSOCKET_BUFFERING_THRESHOLD = 1500;
 export const PEDESTRIAN_WEBSOCKET_BUFFER_FLUSH_MS = 200;
 export const RUNNING_VELOCITY_THRESHOLD = 5;
-export const THIRSTY_THRESHOLD = 4;
+export const THIRSTY_THRESHOLD = 1;
 
 export const MOOD_EMOJI_MAP: Record<Pedestrian["mood"], string> = {
   happy: "🙂",
