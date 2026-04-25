@@ -9,11 +9,7 @@ interface FilterChipsProps {
   onSelect: (id: string) => void;
 }
 
-export function FilterChips({
-  chips,
-  selectedId,
-  onSelect,
-}: FilterChipsProps) {
+export function FilterChips({ chips, selectedId, onSelect }: FilterChipsProps) {
   return (
     <div className="flex min-h-0 flex-wrap gap-1.5" role="group">
       {chips.map((chip) => {

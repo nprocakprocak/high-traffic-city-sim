@@ -9,10 +9,7 @@ interface PedestrianListTableSectionProps {
 }
 
 export function PedestrianListTableSection({ pedestrianIds }: PedestrianListTableSectionProps) {
-  const getPedestrianId = useCallback(
-    (index: number) => pedestrianIds[index],
-    [pedestrianIds],
-  );
+  const getPedestrianId = useCallback((index: number) => pedestrianIds[index], [pedestrianIds]);
 
   return (
     <div

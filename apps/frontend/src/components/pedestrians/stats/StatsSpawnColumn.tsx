@@ -40,7 +40,9 @@ export function StatsSpawnColumn({
           Buffering WebSocket messages:{" "}
           <span
             className={
-              isWebSocketEventBufferingEnabled ? "font-semibold text-emerald-600" : "font-semibold text-red-600"
+              isWebSocketEventBufferingEnabled
+                ? "font-semibold text-emerald-600"
+                : "font-semibold text-red-600"
             }
           >
             {isWebSocketEventBufferingEnabled ? "On" : "Off"}

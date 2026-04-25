@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties } from "re
 import { CityMap } from "../components/CityMap";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { PedestrianFilterList } from "../components/pedestrians/filterList/PedestrianFilterList";
-import { PedestrianStatsPanel } from "../components/pedestrians/stats/PedestrianStatsPanel";  
+import { PedestrianStatsPanel } from "../components/pedestrians/stats/PedestrianStatsPanel";
 import { CITY_CELL_SIZE, CITY_GRID_COLS, CITY_GRID_ROWS } from "../constants";
 import { usePedestrians } from "../hooks/usePedestrians";
 import { usePedestriansStore } from "../stores/pedestriansStore";
@@ -18,8 +18,8 @@ export default function HomePage() {
   const [roadPositions, setRoadPositions] = useState<GridPosition[]>([]);
   const { updatePedestrians, error, setSpawnInterval, isWebSocketEventBufferingEnabled } =
     usePedestrians({
-    cityGrid,
-    roadPositions,
+      cityGrid,
+      roadPositions,
     });
   const pedestriansStoreRef = useRef(usePedestriansStore);
 
@@ -64,10 +64,7 @@ export default function HomePage() {
         >
           <div className="flex min-w-0 w-full max-w-full flex-col gap-4">
             <section className="w-fit max-w-full" aria-label="City map">
-              <CityMap
-                cityGrid={cityGrid}
-                onPedestrianStop={newDestination}
-              />
+              <CityMap cityGrid={cityGrid} onPedestrianStop={newDestination} />
             </section>
 
             <div className="w-full min-w-0 max-w-full">

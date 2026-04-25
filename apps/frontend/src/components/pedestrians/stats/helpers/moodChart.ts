@@ -32,4 +32,3 @@ export function moodCount(
       return moodCounters.shockedCount;
   }
 }
-

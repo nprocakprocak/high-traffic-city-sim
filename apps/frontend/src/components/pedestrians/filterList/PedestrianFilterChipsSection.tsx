@@ -8,11 +8,10 @@ import type {
   PedestrianFilterSelection,
 } from "./types";
 
-interface PedestrianFilterChipsSectionProps
-  extends Pick<
-    PedestrianFilterListProps,
-    "totalCount" | "paceCounters" | "moodCounters" | "thirstCounters"
-  > {
+interface PedestrianFilterChipsSectionProps extends Pick<
+  PedestrianFilterListProps,
+  "totalCount" | "paceCounters" | "moodCounters" | "thirstCounters"
+> {
   selectedFilters: PedestrianFilterSelection;
   onSelectMood: (mood: PedestrianFilterSelection["mood"]) => void;
   onSelectPace: (pace: PedestrianFilterSelection["pace"]) => void;

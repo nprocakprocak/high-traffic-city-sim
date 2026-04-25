@@ -59,10 +59,10 @@ export function useWebSocket(
     const mergedRemoveIds = Array.from(new Set(removeBufferRef.current));
     removeBufferRef.current = [];
 
-    const mergedUpdates: PedestrianUpdate[] = Array.from(
-      updateMapRef.current,
-      ([id, updates]) => ({ id, updates: { ...updates } }),
-    );
+    const mergedUpdates: PedestrianUpdate[] = Array.from(updateMapRef.current, ([id, updates]) => ({
+      id,
+      updates: { ...updates },
+    }));
     updateMapRef.current = new Map();
 
     const mergedAddPedestrians = addBufferRef.current;
