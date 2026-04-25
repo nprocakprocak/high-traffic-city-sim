@@ -13,7 +13,7 @@ interface UsePedestriansProps {
 
 export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps) {
   const addPedestrians = usePedestriansStore((state) => state.addPedestrians);
-  const removePedestrian = usePedestriansStore((state) => state.removePedestrian);
+  const removePedestrians = usePedestriansStore((state) => state.removePedestrians);
   const updatePedestrians = usePedestriansStore((state) => state.updatePedestrians);
 
   const onNewPedestrians = useCallback(
@@ -50,7 +50,7 @@ export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps)
 
   const { error, setSpawnInterval } = useWebSocket(
     onNewPedestrians,
-    removePedestrian,
+    removePedestrians,
     updatePedestrians,
   );
 

@@ -5,14 +5,14 @@ import type { PedestrianUpdate } from "../stores/pedestriansStore";
 
 export function useWebSocket(
   onNewPedestrians: (pedestrians: Pedestrian[]) => void,
-  onRemovePedestrian: (id: string) => void,
+  onRemovePedestrians: (ids: string[]) => void,
   onUpdatePedestrians: (items: PedestrianUpdate[]) => void,
 ) {
   const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const socketRef = useRef<Socket | null>(null);
   const onNewPedestriansRef = useRef(onNewPedestrians);
-  const onRemovePedestrianRef = useRef(onRemovePedestrian);
+  const onRemovePedestriansRef = useRef(onRemovePedestrians);
   const onUpdatePedestriansRef = useRef(onUpdatePedestrians);
 
   useEffect(() => {
@@ -20,8 +20,8 @@ export function useWebSocket(
   }, [onNewPedestrians]);
 
   useEffect(() => {
-    onRemovePedestrianRef.current = onRemovePedestrian;
-  }, [onRemovePedestrian]);
+    onRemovePedestriansRef.current = onRemovePedestrians;
+  }, [onRemovePedestrians]);
 
   useEffect(() => {
     onUpdatePedestriansRef.current = onUpdatePedestrians;
@@ -49,7 +49,7 @@ export function useWebSocket(
     });
 
     newSocket.on("remove_pedestrian", (id: string) => {
-      onRemovePedestrianRef.current(id);
+      onRemovePedestriansRef.current([id]);
     });
 
     newSocket.on(

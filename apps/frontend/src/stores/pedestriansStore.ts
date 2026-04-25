@@ -41,7 +41,7 @@ interface PedestriansState {
   stats: PedestrianStatsSummary;
   addPedestrians: (pedestrians: Pedestrian[]) => void;
   updatePedestrians: (items: PedestrianUpdate[]) => void;
-  removePedestrian: (id: string) => void;
+  removePedestrians: (ids: string[]) => void;
 }
 
 const EMPTY_STATS: PedestrianStatsSummary = {
@@ -272,25 +272,33 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
 
       return { pedestriansById: nextById, stats: nextStats };
     }),
-  removePedestrian: (id) =>
+  removePedestrians: (ids) =>
     set((state) => {
-      const current = state.pedestriansById[id];
-      if (!current) {
+      if (ids.length === 0) {
         return state;
       }
+      const toRemove = new Set(ids);
+      const nextById: Record<string, Pedestrian> = { ...state.pedestriansById };
+      let nextStats: PedestrianStatsSummary = state.stats;
 
-      const nextById = { ...state.pedestriansById };
-      delete nextById[id];
+      for (const id of toRemove) {
+        const current = nextById[id];
+        if (!current) {
+          continue;
+        }
+        delete nextById[id];
+        nextStats = applyRemoveStats(nextStats, current);
+      }
 
       const nextPedestrianIds = state.pedestrianIds.filter(
-        (pedestrianId) => pedestrianId !== id,
+        (pedestrianId) => !toRemove.has(pedestrianId),
       );
 
       return {
         pedestrianIds: nextPedestrianIds,
         mapDisplayedPedestrianIds: nextMapDisplayedPedestrianIds(nextPedestrianIds),
         pedestriansById: nextById,
-        stats: applyRemoveStats(state.stats, current),
+        stats: nextStats,
       };
     }),
 }));
