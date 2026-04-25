@@ -63,7 +63,7 @@ export default function HomePage() {
           }
         >
           <div className="flex min-w-0 w-full max-w-full flex-col gap-4">
-            <section className="w-fit max-w-full" aria-label="City map">
+            <section className="w-full min-w-0" aria-label="City map">
               <CityMap cityGrid={cityGrid} onPedestrianStop={newDestination} />
             </section>
 
