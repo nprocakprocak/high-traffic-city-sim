@@ -24,17 +24,17 @@ function SortHeaderButton({
   onSortColumnSelect,
 }: SortHeaderButtonProps) {
   const isActive = selectedSort.column === column && selectedSort.direction !== "none";
-  const arrow = !isActive ? "<>" : selectedSort.direction === "asc" ? "^" : "v";
+  const sortEmoji = !isActive ? "↔️" : selectedSort.direction === "asc" ? "⬆️" : "⬇️";
   return (
     <button
       type="button"
-      className="flex min-w-0 items-center gap-1 text-left transition-colors hover:text-violet-700"
+      className="flex min-w-0 cursor-pointer items-center gap-1 text-left transition-colors hover:text-violet-700"
       onClick={() => onSortColumnSelect(column)}
       aria-label={`Sort by ${label}`}
     >
       <span className="truncate">{label}</span>
       <span className={`text-[11px] ${isActive ? "text-violet-700" : "text-stone-400"}`}>
-        {arrow}
+        {sortEmoji}
       </span>
     </button>
   );
