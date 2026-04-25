@@ -43,8 +43,10 @@ export function useWebSocket(
       setError(null);
     });
 
-    newSocket.on("pedestrian", (pedestrian: Pedestrian) => {
-      onNewPedestrianRef.current(pedestrian);
+    newSocket.on("pedestrians", (pedestrians: Pedestrian[]) => {
+      for (const pedestrian of pedestrians) {
+        onNewPedestrianRef.current(pedestrian);
+      }
     });
 
     newSocket.on("remove_pedestrian", (id: string) => {

@@ -28,6 +28,22 @@ const clampSpawnMult = (value: unknown): number => {
   return Math.min(20, Math.max(1, Math.trunc(n)));
 };
 
+const pedestrianBatchSizeForMult = (mult: number): number => {
+  if (mult >= 1 && mult <= 2) {
+    return 5;
+  }
+  if (mult >= 3 && mult <= 5) {
+    return 4;
+  }
+  if (mult >= 6 && mult <= 9) {
+    return 3;
+  }
+  if (mult >= 10 && mult <= 15) {
+    return 2;
+  }
+  return 1;
+};
+
 io.on("connection", (socket) => {
   console.log(`Client connected: ${socket.id}`);
 
@@ -35,12 +51,13 @@ io.on("connection", (socket) => {
   const updateTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
   const activePedestrians = new Set<string>();
 
+  let spawnIntervalMult = DEFAULT_SPAWN_MULT;
   let spawnIntervalMs = SPAWN_BASE_MS * DEFAULT_SPAWN_MULT;
   let intervalId: ReturnType<typeof setInterval> | undefined;
 
-  const emitOnePedestrian = () => {
-    const pedestrian = PedestrianService.generateRandomPedestrian();
-    socket.emit("pedestrian", pedestrian);
+  const registerSpawnedPedestrian = (
+    pedestrian: ReturnType<typeof PedestrianService.generateRandomPedestrian>,
+  ) => {
     activePedestrians.add(pedestrian.id);
     let currentThirst = pedestrian.thirst;
 
@@ -75,17 +92,29 @@ io.on("connection", (socket) => {
     removalTimeouts.push(timeoutId);
   };
 
+  const emitPedestrianSpawnBatch = () => {
+    const batchSize = pedestrianBatchSizeForMult(spawnIntervalMult);
+    const batch: ReturnType<typeof PedestrianService.generateRandomPedestrian>[] = [];
+    for (let i = 0; i < batchSize; i += 1) {
+      const pedestrian = PedestrianService.generateRandomPedestrian();
+      batch.push(pedestrian);
+      registerSpawnedPedestrian(pedestrian);
+    }
+    socket.emit("pedestrians", batch);
+  };
+
   const scheduleSpawnInterval = () => {
     if (intervalId !== undefined) {
       clearInterval(intervalId);
     }
-    intervalId = setInterval(emitOnePedestrian, spawnIntervalMs);
+    intervalId = setInterval(emitPedestrianSpawnBatch, spawnIntervalMs);
   };
 
   scheduleSpawnInterval();
 
   socket.on("set_spawn_interval_mult", (value: unknown) => {
-    spawnIntervalMs = SPAWN_BASE_MS * clampSpawnMult(value);
+    spawnIntervalMult = clampSpawnMult(value);
+    spawnIntervalMs = SPAWN_BASE_MS * spawnIntervalMult;
     scheduleSpawnInterval();
   });
 
