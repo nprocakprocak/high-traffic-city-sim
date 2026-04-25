@@ -5,7 +5,7 @@ import {
   RUNNING_VELOCITY_THRESHOLD,
   THIRSTY_THRESHOLD,
 } from "../constants";
-import type { PedestrianFilterSelection } from "../components/pedestrians/filterList/types";
+import type { PedestrianFilterSelection } from "../types/pedestrianFilters";
 import type { PedestrianStatsSummary } from "../types/pedestrianStats";
 
 export type PedestrianFieldUpdates = Partial<Omit<Pedestrian, "id">>;

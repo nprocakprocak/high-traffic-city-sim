@@ -2,11 +2,8 @@ import type { Pedestrian } from "@high-traffic-city-sim/types";
 import { FilterChips } from "./FilterChips";
 import { MOOD_LABEL, MOOD_ORDER } from "./constants";
 import { getMoodCount } from "./helpers/moodCount";
-import type {
-  PedestrianFilterChip,
-  PedestrianFilterListProps,
-  PedestrianFilterSelection,
-} from "./types";
+import type { PedestrianFilterSelection } from "../../../types/pedestrianFilters";
+import type { PedestrianFilterChip, PedestrianFilterListProps } from "./types";
 
 interface PedestrianFilterChipsSectionProps extends Pick<
   PedestrianFilterListProps,
