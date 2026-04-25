@@ -13,6 +13,7 @@ export type PedestrianUpdate = { id: string; updates: PedestrianFieldUpdates };
 
 interface PedestriansState {
   pedestrianIds: string[];
+  filteredPedestrianIds: string[];
   mapDisplayedPedestrianIds: string[];
   pedestriansById: Record<string, Pedestrian>;
   stats: PedestrianStatsSummary;
@@ -167,13 +168,57 @@ function nextMapDisplayedPedestrianIds(pedestrianIds: string[]): string[] {
   return pedestrianIds.slice(-MAP_MAX_DISPLAYED_PEDESTRIANS);
 }
 
+function nextFilteredPedestrianIds(
+  pedestrianIds: string[],
+  pedestriansById: Record<string, Pedestrian>,
+  selectedFilters: PedestrianFilterSelection,
+): string[] {
+  if (
+    selectedFilters.mood === "all" &&
+    selectedFilters.pace === "all" &&
+    selectedFilters.thirst === "all"
+  ) {
+    return pedestrianIds;
+  }
+
+  return pedestrianIds.filter((id) => {
+    const pedestrian = pedestriansById[id];
+    if (!pedestrian) {
+      return false;
+    }
+
+    const moodMatches = selectedFilters.mood === "all" || pedestrian.mood === selectedFilters.mood;
+    const paceMatches =
+      selectedFilters.pace === "all" ||
+      (selectedFilters.pace === "running"
+        ? pedestrian.velocity > RUNNING_VELOCITY_THRESHOLD
+        : pedestrian.velocity <= RUNNING_VELOCITY_THRESHOLD);
+    const thirstMatches =
+      selectedFilters.thirst === "all" ||
+      (selectedFilters.thirst === "thirsty"
+        ? pedestrian.thirst <= THIRSTY_THRESHOLD
+        : pedestrian.thirst > THIRSTY_THRESHOLD);
+
+    return moodMatches && paceMatches && thirstMatches;
+  });
+}
+
 export const usePedestriansStore = create<PedestriansState>((set) => ({
   pedestrianIds: [],
+  filteredPedestrianIds: [],
   mapDisplayedPedestrianIds: [],
   pedestriansById: {},
   stats: EMPTY_STATS,
   selectedFilters: DEFAULT_FILTERS,
-  setSelectedFilters: (filters) => set({ selectedFilters: filters }),
+  setSelectedFilters: (filters) =>
+    set((state) => ({
+      selectedFilters: filters,
+      filteredPedestrianIds: nextFilteredPedestrianIds(
+        state.pedestrianIds,
+        state.pedestriansById,
+        filters,
+      ),
+    })),
   addPedestrians: (incoming) =>
     set((state) => {
       if (incoming.length === 0) {
@@ -184,30 +229,23 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
         nextById[p.id] = p;
       }
 
-      const hadInBatch = new Set<string>();
       const newIdOrder: string[] = [];
       let nextStats = cloneStats(state.stats);
 
       for (const p of incoming) {
-        if (state.pedestriansById[p.id]) {
-          continue;
-        }
-        if (hadInBatch.has(p.id)) {
-          continue;
-        }
-        hadInBatch.add(p.id);
         newIdOrder.push(p.id);
         nextStats = applyAddStats(nextStats, p);
-      }
-
-      if (newIdOrder.length === 0) {
-        return { pedestriansById: nextById };
       }
 
       const nextPedestrianIds = [...state.pedestrianIds, ...newIdOrder];
 
       return {
         pedestrianIds: nextPedestrianIds,
+        filteredPedestrianIds: nextFilteredPedestrianIds(
+          nextPedestrianIds,
+          nextById,
+          state.selectedFilters,
+        ),
         mapDisplayedPedestrianIds: nextMapDisplayedPedestrianIds(nextPedestrianIds),
         pedestriansById: nextById,
         stats: nextStats,
@@ -260,7 +298,15 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
         }
       }
 
-      return { pedestriansById: nextById, stats: nextStats };
+      return {
+        pedestriansById: nextById,
+        filteredPedestrianIds: nextFilteredPedestrianIds(
+          state.pedestrianIds,
+          nextById,
+          state.selectedFilters,
+        ),
+        stats: nextStats,
+      };
     }),
   removePedestrians: (ids) =>
     set((state) => {
@@ -286,6 +332,11 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
 
       return {
         pedestrianIds: nextPedestrianIds,
+        filteredPedestrianIds: nextFilteredPedestrianIds(
+          nextPedestrianIds,
+          nextById,
+          state.selectedFilters,
+        ),
         mapDisplayedPedestrianIds: nextMapDisplayedPedestrianIds(nextPedestrianIds),
         pedestriansById: nextById,
         stats: nextStats,
