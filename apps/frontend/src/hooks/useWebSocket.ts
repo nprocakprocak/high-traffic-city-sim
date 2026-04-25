@@ -1,18 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { Pedestrian } from "@high-traffic-city-sim/types";
+import type { PedestrianUpdate } from "../stores/pedestriansStore";
 
 export function useWebSocket(
   onNewPedestrians: (pedestrians: Pedestrian[]) => void,
   onRemovePedestrian: (id: string) => void,
-  onUpdatePedestrian: (id: string, updates: Partial<Omit<Pedestrian, "id">>) => void,
+  onUpdatePedestrians: (items: PedestrianUpdate[]) => void,
 ) {
   const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const socketRef = useRef<Socket | null>(null);
   const onNewPedestriansRef = useRef(onNewPedestrians);
   const onRemovePedestrianRef = useRef(onRemovePedestrian);
-  const onUpdatePedestrianRef = useRef(onUpdatePedestrian);
+  const onUpdatePedestriansRef = useRef(onUpdatePedestrians);
 
   useEffect(() => {
     onNewPedestriansRef.current = onNewPedestrians;
@@ -23,8 +24,8 @@ export function useWebSocket(
   }, [onRemovePedestrian]);
 
   useEffect(() => {
-    onUpdatePedestrianRef.current = onUpdatePedestrian;
-  }, [onUpdatePedestrian]);
+    onUpdatePedestriansRef.current = onUpdatePedestrians;
+  }, [onUpdatePedestrians]);
 
   const setSpawnInterval = useCallback((value: number) => {
     socketRef.current?.emit("set_spawn_interval_mult", value);
@@ -54,7 +55,7 @@ export function useWebSocket(
     newSocket.on(
       "update_pedestrian",
       ({ id, ...updates }: { id: string } & Partial<Omit<Pedestrian, "id">>) => {
-        onUpdatePedestrianRef.current(id, updates);
+        onUpdatePedestriansRef.current([{ id, updates }]);
       },
     );
 

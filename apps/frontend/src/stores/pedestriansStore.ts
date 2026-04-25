@@ -31,14 +31,16 @@ export interface PedestrianStatsSummary {
   thirst: PedestrianStatsThirstCounters;
 }
 
+export type PedestrianFieldUpdates = Partial<Omit<Pedestrian, "id">>;
+export type PedestrianUpdate = { id: string; updates: PedestrianFieldUpdates };
+
 interface PedestriansState {
   pedestrianIds: string[];
   mapDisplayedPedestrianIds: string[];
   pedestriansById: Record<string, Pedestrian>;
   stats: PedestrianStatsSummary;
-  addPedestrian: (pedestrian: Pedestrian) => void;
   addPedestrians: (pedestrians: Pedestrian[]) => void;
-  updatePedestrian: (id: string, updates: Partial<Omit<Pedestrian, "id">>) => void;
+  updatePedestrians: (items: PedestrianUpdate[]) => void;
   removePedestrian: (id: string) => void;
 }
 
@@ -182,30 +184,6 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
   mapDisplayedPedestrianIds: [],
   pedestriansById: {},
   stats: EMPTY_STATS,
-  addPedestrian: (pedestrian) =>
-    set((state) => {
-      const existing = state.pedestriansById[pedestrian.id];
-      if (existing) {
-        return {
-          pedestriansById: {
-            ...state.pedestriansById,
-            [pedestrian.id]: pedestrian,
-          },
-        };
-      }
-
-      const nextPedestrianIds = [...state.pedestrianIds, pedestrian.id];
-
-      return {
-        pedestrianIds: nextPedestrianIds,
-        mapDisplayedPedestrianIds: nextMapDisplayedPedestrianIds(nextPedestrianIds),
-        pedestriansById: {
-          ...state.pedestriansById,
-          [pedestrian.id]: pedestrian,
-        },
-        stats: applyAddStats(state.stats, pedestrian),
-      };
-    }),
   addPedestrians: (incoming) =>
     set((state) => {
       if (incoming.length === 0) {
@@ -245,54 +223,54 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
         stats: nextStats,
       };
     }),
-  updatePedestrian: (id, updates) =>
+  updatePedestrians: (items) =>
     set((state) => {
-      const current = state.pedestriansById[id];
-      if (!current) {
+      if (items.length === 0) {
         return state;
       }
 
-      const nextPedestrian = {
-        ...current,
-        ...updates,
-      };
-      const paceChanged =
-        (current.velocity > RUNNING_VELOCITY_THRESHOLD) !==
-        (nextPedestrian.velocity > RUNNING_VELOCITY_THRESHOLD);
-      const thirstChanged =
-        (current.thirst <= THIRSTY_THRESHOLD) !== (nextPedestrian.thirst <= THIRSTY_THRESHOLD);
-      const moodChanged = current.mood !== nextPedestrian.mood;
+      let nextById: Record<string, Pedestrian> = { ...state.pedestriansById };
+      let nextStats: PedestrianStatsSummary = cloneStats(state.stats);
 
-      if (!paceChanged && !thirstChanged && !moodChanged) {
-        return {
-          pedestriansById: {
-            ...state.pedestriansById,
-            [id]: nextPedestrian,
-          },
+      for (const { id, updates } of items) {
+        const current = nextById[id];
+        if (!current) {
+          continue;
+        }
+
+        // anyUpdated = true;
+        const nextPedestrian: Pedestrian = {
+          ...current,
+          ...updates,
         };
+        const paceChanged =
+          (current.velocity > RUNNING_VELOCITY_THRESHOLD) !==
+          (nextPedestrian.velocity > RUNNING_VELOCITY_THRESHOLD);
+        const thirstChanged =
+          (current.thirst <= THIRSTY_THRESHOLD) !== (nextPedestrian.thirst <= THIRSTY_THRESHOLD);
+        const moodChanged = current.mood !== nextPedestrian.mood;
+
+        nextById = { ...nextById, [id]: nextPedestrian };
+
+        if (!paceChanged && !thirstChanged && !moodChanged) {
+          continue;
+        }
+
+        if (paceChanged) {
+          removePace(nextStats, current);
+          addPace(nextStats, nextPedestrian);
+        }
+        if (thirstChanged) {
+          removeThirst(nextStats, current);
+          addThirst(nextStats, nextPedestrian);
+        }
+        if (moodChanged) {
+          removeMood(nextStats, current);
+          addMood(nextStats, nextPedestrian);
+        }
       }
 
-      const stats = cloneStats(state.stats);
-      if (paceChanged) {
-        removePace(stats, current);
-        addPace(stats, nextPedestrian);
-      }
-      if (thirstChanged) {
-        removeThirst(stats, current);
-        addThirst(stats, nextPedestrian);
-      }
-      if (moodChanged) {
-        removeMood(stats, current);
-        addMood(stats, nextPedestrian);
-      }
-
-      return {
-        pedestriansById: {
-          ...state.pedestriansById,
-          [id]: nextPedestrian,
-        },
-        stats,
-      };
+      return { pedestriansById: nextById, stats: nextStats };
     }),
   removePedestrian: (id) =>
     set((state) => {
