@@ -18,10 +18,10 @@ export interface PedestrianRowListProps {
 }
 
 export type PedestrianSortColumn = "name" | "mood" | "pace" | "thirst";
-export type PedestrianSortDirection = "asc" | "desc";
+export type PedestrianSortDirection = "none" | "asc" | "desc";
 
 export interface PedestrianSort {
-  column: PedestrianSortColumn;
+  column: PedestrianSortColumn | null;
   direction: PedestrianSortDirection;
 }
 

@@ -57,8 +57,8 @@ const DEFAULT_FILTERS: PedestrianFilterSelection = {
 };
 
 const DEFAULT_SORT: PedestrianSort = {
-  column: "name",
-  direction: "asc",
+  column: null,
+  direction: "none",
 };
 
 function isRunning(velocity: number): boolean {
@@ -116,7 +116,11 @@ function sortFilteredPedestrianIds(
   pedestriansById: Record<string, Pedestrian>,
   selectedSort: PedestrianSort,
 ): string[] {
-  if (filteredPedestrianIds.length <= 1) {
+  if (
+    filteredPedestrianIds.length <= 1 ||
+    selectedSort.direction === "none" ||
+    !selectedSort.column
+  ) {
     return filteredPedestrianIds;
   }
 
@@ -266,22 +270,30 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
   selectedSort: DEFAULT_SORT,
   setSelectedSortColumn: (column) =>
     set((state) => {
-      const nextSort: PedestrianSort =
-        state.selectedSort.column === column
-          ? {
-              column,
-              direction: state.selectedSort.direction === "asc" ? "desc" : "asc",
-            }
-          : {
-              column,
-              direction: "asc",
-            };
+      let nextSort: PedestrianSort;
+      if (state.selectedSort.column !== column || state.selectedSort.direction === "none") {
+        nextSort = {
+          column,
+          direction: "asc",
+        };
+      } else if (state.selectedSort.direction === "asc") {
+        nextSort = {
+          column,
+          direction: "desc",
+        };
+      } else {
+        nextSort = {
+          column: null,
+          direction: "none",
+        };
+      }
 
       return {
         selectedSort: nextSort,
-        filteredPedestrianIds: sortFilteredPedestrianIds(
-          state.filteredPedestrianIds,
+        filteredPedestrianIds: nextFilteredAndSortedPedestrianIds(
+          state.pedestrianIds,
           state.pedestriansById,
+          state.selectedFilters,
           nextSort,
         ),
       };

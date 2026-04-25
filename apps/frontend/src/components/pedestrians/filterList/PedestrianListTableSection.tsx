@@ -23,7 +23,7 @@ function SortHeaderButton({
   selectedSort,
   onSortColumnSelect,
 }: SortHeaderButtonProps) {
-  const isActive = selectedSort.column === column;
+  const isActive = selectedSort.column === column && selectedSort.direction !== "none";
   const arrow = !isActive ? "<>" : selectedSort.direction === "asc" ? "^" : "v";
   return (
     <button
