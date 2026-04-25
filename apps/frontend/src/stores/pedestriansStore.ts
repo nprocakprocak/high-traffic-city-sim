@@ -5,6 +5,10 @@ import {
   RUNNING_VELOCITY_THRESHOLD,
   THIRSTY_THRESHOLD,
 } from "../constants";
+import type {
+  PedestrianSort,
+  PedestrianSortColumn,
+} from "../components/pedestrians/filterList/types";
 import type { PedestrianFilterSelection } from "../types/pedestrianFilters";
 import type { PedestrianStatsSummary } from "../types/pedestrianStats";
 
@@ -18,6 +22,8 @@ interface PedestriansState {
   pedestriansById: Record<string, Pedestrian>;
   stats: PedestrianStatsSummary;
   selectedFilters: PedestrianFilterSelection;
+  selectedSort: PedestrianSort;
+  setSelectedSortColumn: (column: PedestrianSortColumn) => void;
   setSelectedFilters: (filters: PedestrianFilterSelection) => void;
   addPedestrians: (pedestrians: Pedestrian[]) => void;
   updatePedestrians: (items: PedestrianUpdate[]) => void;
@@ -48,6 +54,11 @@ const DEFAULT_FILTERS: PedestrianFilterSelection = {
   mood: "all",
   pace: "all",
   thirst: "all",
+};
+
+const DEFAULT_SORT: PedestrianSort = {
+  column: "name",
+  direction: "asc",
 };
 
 function isRunning(velocity: number): boolean {
@@ -98,6 +109,67 @@ function nextFilteredPedestrianIds(
 
     return moodMatches && paceMatches && thirstMatches;
   });
+}
+
+function sortFilteredPedestrianIds(
+  filteredPedestrianIds: string[],
+  pedestriansById: Record<string, Pedestrian>,
+  selectedSort: PedestrianSort,
+): string[] {
+  if (filteredPedestrianIds.length <= 1) {
+    return filteredPedestrianIds;
+  }
+
+  const directionFactor = selectedSort.direction === "asc" ? 1 : -1;
+
+  const sortedPedestrianIds = [...filteredPedestrianIds];
+  sortedPedestrianIds.sort((leftId, rightId) => {
+    const leftPedestrian = pedestriansById[leftId];
+    const rightPedestrian = pedestriansById[rightId];
+    if (!leftPedestrian || !rightPedestrian) {
+      return 0;
+    }
+
+    let comparison = 0;
+    switch (selectedSort.column) {
+      case "name":
+        comparison = leftPedestrian.name.localeCompare(rightPedestrian.name);
+        break;
+      case "mood":
+        comparison = leftPedestrian.mood.localeCompare(rightPedestrian.mood);
+        break;
+      case "pace": {
+        const leftPace = leftPedestrian.velocity > RUNNING_VELOCITY_THRESHOLD ? 0 : 1;
+        const rightPace = rightPedestrian.velocity > RUNNING_VELOCITY_THRESHOLD ? 0 : 1;
+        comparison = leftPace - rightPace;
+        break;
+      }
+      case "thirst": {
+        const leftThirst = leftPedestrian.thirst <= THIRSTY_THRESHOLD ? 1 : 0;
+        const rightThirst = rightPedestrian.thirst <= THIRSTY_THRESHOLD ? 1 : 0;
+        comparison = leftThirst - rightThirst;
+        break;
+      }
+    }
+
+    return comparison * directionFactor;
+  });
+
+  return sortedPedestrianIds;
+}
+
+function nextFilteredAndSortedPedestrianIds(
+  pedestrianIds: string[],
+  pedestriansById: Record<string, Pedestrian>,
+  selectedFilters: PedestrianFilterSelection,
+  selectedSort: PedestrianSort,
+): string[] {
+  const filteredPedestrianIds = nextFilteredPedestrianIds(
+    pedestrianIds,
+    pedestriansById,
+    selectedFilters,
+  );
+  return sortFilteredPedestrianIds(filteredPedestrianIds, pedestriansById, selectedSort);
 }
 
 function nextStats(
@@ -191,13 +263,37 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
   pedestriansById: {},
   stats: EMPTY_STATS,
   selectedFilters: DEFAULT_FILTERS,
+  selectedSort: DEFAULT_SORT,
+  setSelectedSortColumn: (column) =>
+    set((state) => {
+      const nextSort: PedestrianSort =
+        state.selectedSort.column === column
+          ? {
+              column,
+              direction: state.selectedSort.direction === "asc" ? "desc" : "asc",
+            }
+          : {
+              column,
+              direction: "asc",
+            };
+
+      return {
+        selectedSort: nextSort,
+        filteredPedestrianIds: sortFilteredPedestrianIds(
+          state.filteredPedestrianIds,
+          state.pedestriansById,
+          nextSort,
+        ),
+      };
+    }),
   setSelectedFilters: (filters) =>
     set((state) => ({
       selectedFilters: filters,
-      filteredPedestrianIds: nextFilteredPedestrianIds(
+      filteredPedestrianIds: nextFilteredAndSortedPedestrianIds(
         state.pedestrianIds,
         state.pedestriansById,
         filters,
+        state.selectedSort,
       ),
       stats: nextStats(state.pedestrianIds, state.pedestriansById, filters),
     })),
@@ -220,10 +316,11 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
 
       return {
         pedestrianIds: nextPedestrianIds,
-        filteredPedestrianIds: nextFilteredPedestrianIds(
+        filteredPedestrianIds: nextFilteredAndSortedPedestrianIds(
           nextPedestrianIds,
           nextById,
           state.selectedFilters,
+          state.selectedSort,
         ),
         mapDisplayedPedestrianIds: nextMapDisplayedPedestrianIds(nextPedestrianIds),
         pedestriansById: nextById,
@@ -253,10 +350,11 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
 
       return {
         pedestriansById: nextById,
-        filteredPedestrianIds: nextFilteredPedestrianIds(
+        filteredPedestrianIds: nextFilteredAndSortedPedestrianIds(
           state.pedestrianIds,
           nextById,
           state.selectedFilters,
+          state.selectedSort,
         ),
         stats: nextStats(state.pedestrianIds, nextById, state.selectedFilters),
       };
@@ -283,10 +381,11 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
 
       return {
         pedestrianIds: nextPedestrianIds,
-        filteredPedestrianIds: nextFilteredPedestrianIds(
+        filteredPedestrianIds: nextFilteredAndSortedPedestrianIds(
           nextPedestrianIds,
           nextById,
           state.selectedFilters,
+          state.selectedSort,
         ),
         mapDisplayedPedestrianIds: nextMapDisplayedPedestrianIds(nextPedestrianIds),
         pedestriansById: nextById,

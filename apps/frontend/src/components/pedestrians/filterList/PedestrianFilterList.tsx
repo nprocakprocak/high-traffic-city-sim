@@ -11,6 +11,8 @@ export function PedestrianFilterList() {
     moodCounters,
     thirstCounters,
     selectedFilters,
+    selectedSort,
+    setSelectedSortColumn,
     setSelectedFilters,
   } = usePedestriansStore(
     useShallow((state) => ({
@@ -20,6 +22,8 @@ export function PedestrianFilterList() {
       moodCounters: state.stats.mood,
       thirstCounters: state.stats.thirst,
       selectedFilters: state.selectedFilters,
+      selectedSort: state.selectedSort,
+      setSelectedSortColumn: state.setSelectedSortColumn,
       setSelectedFilters: state.setSelectedFilters,
     })),
   );
@@ -36,7 +40,11 @@ export function PedestrianFilterList() {
         onSelectPace={(pace) => setSelectedFilters({ ...selectedFilters, pace })}
         onSelectThirst={(thirst) => setSelectedFilters({ ...selectedFilters, thirst })}
       />
-      <PedestrianListTableSection pedestrianIds={filteredPedestrianIds} />
+      <PedestrianListTableSection
+        pedestrianIds={filteredPedestrianIds}
+        selectedSort={selectedSort}
+        onSortColumnSelect={setSelectedSortColumn}
+      />
     </div>
   );
 }

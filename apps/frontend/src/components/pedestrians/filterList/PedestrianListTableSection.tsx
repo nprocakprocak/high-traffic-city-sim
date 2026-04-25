@@ -2,13 +2,49 @@ import { useCallback } from "react";
 import { List } from "react-window";
 import { LIST_HEIGHT, OVERSCAN_COUNT, ROW_GRID, ROW_HEIGHT } from "./constants";
 import { VirtualizedPedestrianListRow } from "./VirtualizedPedestrianListRow";
-import type { PedestrianRowListProps } from "./types";
+import type { PedestrianRowListProps, PedestrianSort, PedestrianSortColumn } from "./types";
 
 interface PedestrianListTableSectionProps {
   pedestrianIds: string[];
+  selectedSort: PedestrianSort;
+  onSortColumnSelect: (column: PedestrianSortColumn) => void;
 }
 
-export function PedestrianListTableSection({ pedestrianIds }: PedestrianListTableSectionProps) {
+interface SortHeaderButtonProps {
+  label: string;
+  column: PedestrianSortColumn;
+  selectedSort: PedestrianSort;
+  onSortColumnSelect: (column: PedestrianSortColumn) => void;
+}
+
+function SortHeaderButton({
+  label,
+  column,
+  selectedSort,
+  onSortColumnSelect,
+}: SortHeaderButtonProps) {
+  const isActive = selectedSort.column === column;
+  const arrow = !isActive ? "<>" : selectedSort.direction === "asc" ? "^" : "v";
+  return (
+    <button
+      type="button"
+      className="flex min-w-0 items-center gap-1 text-left transition-colors hover:text-violet-700"
+      onClick={() => onSortColumnSelect(column)}
+      aria-label={`Sort by ${label}`}
+    >
+      <span className="truncate">{label}</span>
+      <span className={`text-[11px] ${isActive ? "text-violet-700" : "text-stone-400"}`}>
+        {arrow}
+      </span>
+    </button>
+  );
+}
+
+export function PedestrianListTableSection({
+  pedestrianIds,
+  selectedSort,
+  onSortColumnSelect,
+}: PedestrianListTableSectionProps) {
   const getPedestrianId = useCallback((index: number) => pedestrianIds[index], [pedestrianIds]);
 
   return (
@@ -20,10 +56,30 @@ export function PedestrianListTableSection({ pedestrianIds }: PedestrianListTabl
         className={`${ROW_GRID} shrink-0 rounded-t-md border-b border-stone-200/90 bg-stone-50/80 py-1 text-xs font-medium text-stone-500`}
       >
         <div className="h-7 w-7 shrink-0" aria-hidden />
-        <span className="min-w-0 text-left">Name</span>
-        <span className="min-w-0 text-left">Mood</span>
-        <span className="min-w-0 text-left">Pace</span>
-        <span className="min-w-0 text-left">Thirst</span>
+        <SortHeaderButton
+          label="Name"
+          column="name"
+          selectedSort={selectedSort}
+          onSortColumnSelect={onSortColumnSelect}
+        />
+        <SortHeaderButton
+          label="Mood"
+          column="mood"
+          selectedSort={selectedSort}
+          onSortColumnSelect={onSortColumnSelect}
+        />
+        <SortHeaderButton
+          label="Pace"
+          column="pace"
+          selectedSort={selectedSort}
+          onSortColumnSelect={onSortColumnSelect}
+        />
+        <SortHeaderButton
+          label="Thirst"
+          column="thirst"
+          selectedSort={selectedSort}
+          onSortColumnSelect={onSortColumnSelect}
+        />
       </div>
       {pedestrianIds.length === 0 ? (
         <ul className="list-none rounded-b-md pb-1" aria-label="Pedestrians list items">
