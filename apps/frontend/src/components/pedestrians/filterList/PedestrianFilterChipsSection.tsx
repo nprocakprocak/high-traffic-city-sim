@@ -1,7 +1,7 @@
 import type { Pedestrian } from "@high-traffic-city-sim/types";
+import { getMoodCount } from "../../../domain/pedestrians/stats";
 import { FilterChips } from "./FilterChips";
 import { MOOD_LABEL, MOOD_ORDER } from "./constants";
-import { getMoodCount } from "./helpers/moodCount";
 import type { PedestrianFilterSelection } from "../../../types/pedestrianFilters";
 import type { PedestrianFilterChip, PedestrianFilterListProps } from "./types";
 

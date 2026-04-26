@@ -1,8 +1,5 @@
 import type { Pedestrian } from "@high-traffic-city-sim/types";
-import type {
-  PedestrianSort,
-  PedestrianSortColumn,
-} from "../components/pedestrians/filterList/types";
+import type { PedestrianSort, PedestrianSortColumn } from "../types/pedestrianSort";
 import type { PedestrianFilterSelection } from "../types/pedestrianFilters";
 import type { PedestrianStatsSummary } from "../types/pedestrianStats";
 

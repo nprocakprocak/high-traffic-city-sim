@@ -1,7 +1,10 @@
 import type { Pedestrian } from "@high-traffic-city-sim/types";
-import type { MoodCountersShape } from "../types";
+import type { PedestrianStatsMoodCounters } from "../../types/pedestrianStats";
 
-export function getMoodCount(mood: Pedestrian["mood"], moodCounters: MoodCountersShape): number {
+export function getMoodCount(
+  mood: Pedestrian["mood"],
+  moodCounters: PedestrianStatsMoodCounters,
+): number {
   switch (mood) {
     case "happy":
       return moodCounters.happyCount;

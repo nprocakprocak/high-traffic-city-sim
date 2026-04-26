@@ -1,6 +1,6 @@
 import { useMemo } from "react";
+import { getMoodCount } from "../../../domain/pedestrians/stats";
 import { MOOD_ORDER } from "./constants";
-import { moodCount } from "./helpers/moodChart";
 import { MoodShareChart } from "./MoodShareChart";
 import { MoodShareLegend } from "./MoodShareLegend";
 import type { PedestrianStatsMoodCounters } from "../../../types/pedestrianStats";
@@ -19,7 +19,7 @@ export function MoodShareSection({ totalCount, moodCounters }: MoodShareSectionP
     return MOOD_ORDER.map((mood) => {
       return {
         mood,
-        percent: Math.round((moodCount(mood, moodCounters) / totalCount) * 100),
+        percent: Math.round((getMoodCount(mood, moodCounters) / totalCount) * 100),
       };
     });
   }, [moodCounters, totalCount]);

@@ -1,6 +1,6 @@
 import type { Pedestrian } from "@high-traffic-city-sim/types";
+import { MOOD_LABEL } from "../../../domain/pedestrians/constants";
 import { MOOD_COLORS } from "./constants";
-import { moodLabel } from "./helpers/moodChart";
 
 export interface MoodShareLegendItem {
   mood: Pedestrian["mood"];
@@ -22,7 +22,7 @@ export function MoodShareLegend({ moodPercentages }: MoodShareLegendProps) {
               style={{ backgroundColor: MOOD_COLORS[mood] }}
               aria-hidden
             />
-            <span className="truncate text-gray-600">{moodLabel(mood)}</span>
+            <span className="truncate text-gray-600">{MOOD_LABEL[mood]}</span>
           </div>
           <span className="shrink-0 text-gray-700 tabular-nums">{percent}%</span>
         </li>

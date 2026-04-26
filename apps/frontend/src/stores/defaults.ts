@@ -1,4 +1,4 @@
-import type { PedestrianSort } from "../components/pedestrians/filterList/types";
+import type { PedestrianSort } from "../types/pedestrianSort";
 import type { PedestrianFilterSelection } from "../types/pedestrianFilters";
 import type { PedestrianStatsSummary } from "../types/pedestrianStats";
 

@@ -1,6 +1,6 @@
 import type { Pedestrian } from "@high-traffic-city-sim/types";
+import { getMoodCount } from "../../../../domain/pedestrians/stats";
 import { MOOD_COLORS, MOOD_ORDER, PIE_CENTER, PIE_RADIUS } from "../constants";
-import { moodCount } from "./moodChart";
 import type { PedestrianStatsMoodCounters } from "../../../../types/pedestrianStats";
 
 const TAU = 2 * Math.PI;
@@ -58,7 +58,7 @@ export function buildMoodPieSlices(
   let angle = -Math.PI / 2;
 
   for (const mood of MOOD_ORDER) {
-    const count = moodCount(mood, moodCounters);
+    const count = getMoodCount(mood, moodCounters);
     const share = count / totalCount;
     const start = angle;
     const end = start + TAU * share;

@@ -1,12 +1,10 @@
 import type { Pedestrian } from "@high-traffic-city-sim/types";
 import { create } from "zustand";
-import type { PedestrianSort } from "../components/pedestrians/filterList/types";
+import type { PedestrianSort } from "../types/pedestrianSort";
 import { DEFAULT_FILTERS, DEFAULT_SORT, EMPTY_STATS } from "./defaults";
-import {
-  nextFilteredAndSortedPedestrianIds,
-  nextMapDisplayedPedestrianIds,
-  nextStats,
-} from "./helpers";
+import { nextFilteredAndSortedPedestrianIds } from "./helpers/filterSort";
+import { nextMapDisplayedPedestrianIds } from "./helpers/mapDisplay";
+import { nextStats } from "./helpers/stats";
 import type { PedestriansState } from "./types";
 export type { PedestrianFieldUpdates, PedestrianUpdate } from "./types";
 

@@ -17,14 +17,6 @@ export interface PedestrianRowListProps {
   getPedestrianId: (index: number) => string | undefined;
 }
 
-export type PedestrianSortColumn = "name" | "mood" | "pace" | "thirst";
-export type PedestrianSortDirection = "none" | "asc" | "desc";
-
-export interface PedestrianSort {
-  column: PedestrianSortColumn | null;
-  direction: PedestrianSortDirection;
-}
-
 export interface PedestrianFilterChip {
   id: string;
   label: string;

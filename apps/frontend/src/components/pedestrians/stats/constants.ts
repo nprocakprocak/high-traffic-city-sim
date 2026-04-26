@@ -1,4 +1,5 @@
-import { Pedestrian } from "@high-traffic-city-sim/types";
+import type { Pedestrian } from "@high-traffic-city-sim/types";
+export { MOOD_ORDER } from "../../../domain/pedestrians/constants";
 
 export const PIE_CENTER = 50;
 export const PIE_RADIUS = 44;
@@ -12,12 +13,3 @@ export const MOOD_COLORS: Record<Pedestrian["mood"], string> = {
   scared: "#8f7fd4",
   shocked: "#d484a8",
 };
-
-export const MOOD_ORDER: Pedestrian["mood"][] = [
-  "happy",
-  "sad",
-  "angry",
-  "excited",
-  "scared",
-  "shocked",
-];
