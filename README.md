@@ -10,7 +10,7 @@ All pedestrians are displayed in the frontend dashboard, which updates live desp
 
 You can see a live demo here:
 
-Link goes here...
+[https://high-traffic-city-sim.vercel.app/](https://high-traffic-city-sim.vercel.app/)
 
 The monorepo contains:
 
