@@ -5,6 +5,8 @@ import { Server } from "socket.io";
 import { PedestrianSocketSessionService } from "./services/PedestrianSocketSessionService.js";
 
 const app = express();
+const url = process.env.RAILWAY_PUBLIC_DOMAIN ? process.env.RAILWAY_PUBLIC_DOMAIN : "http://localhost";
+const corsOrigin = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN : "http://localhost:3000";
 const port = process.env.PORT ? Number(process.env.PORT) : 4000;
 
 app.use(cors());
@@ -12,7 +14,7 @@ app.use(cors());
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: corsOrigin,
     methods: ["GET", "POST"],
   },
 });
@@ -33,5 +35,5 @@ io.on("connection", (socket) => {
 });
 
 httpServer.listen(port, () => {
-  console.log(`Backend is running at http://localhost:${port}`);
+  console.log(`Backend is running at ${url}:${port}`);
 });
