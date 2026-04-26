@@ -8,7 +8,7 @@ Each pedestrian is randomly updated by the backend every few seconds, and remove
 
 All pedestrians are displayed in the frontend dashboard, which updates live despite heavy traffic.
 
-You can see a live demo here:
+You can see a live demo here: (try it also on your mobile phone 📱)
 
 [https://high-traffic-city-sim.vercel.app/](https://high-traffic-city-sim.vercel.app/)
 
