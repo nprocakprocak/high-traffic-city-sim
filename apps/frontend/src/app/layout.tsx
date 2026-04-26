@@ -2,8 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Hello World",
-  description: "Simple Next.js frontend fetching Hello world from backend",
+  title: "High traffic city simulator",
+  description: "A demo application showing how to handle heavy WebSocket traffic and displaying real time updated dashboard.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

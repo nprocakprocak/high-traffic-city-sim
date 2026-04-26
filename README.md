@@ -1,21 +1,28 @@
-# high-traffic-city-sim
+# High traffic city simulator
 
-Monorepo zawierający dwie aplikacje:
+A demo application showing how to handle heavy WebSocket traffic and render
+a frequently changing dashboard.
+
+The backend generates dozens of new pedestrians every second and sends them to the frontend.
+Each pedestrian is randomly updated by the backend every few seconds, and removed after a few minutes.
+
+All pedestrians are displayed in the frontend dashboard, which updates live despite heavy traffic.
+
+You can see a live demo here:
+
+Link goes here...
+
+The monorepo contains:
 
 - `apps/frontend` — frontend Next.js + TypeScript
-- `apps/backend` — backend Node.js + Express zwracający `Hello world`
+- `apps/backend` — backend Node.js + Express
+- `apps/types` — shared types for both apps
 
-## Uruchamianie
+## Running
 
-1. Zainstaluj zależności w katalogu głównym:
-   ```bash
+```bash
    npm install
-   ```
+   npm run dev
+```
 
-2. Włącz backend i frontend oddzielnie:
-   ```bash
-   npm run dev:backend
-   npm run dev:frontend
-   ```
-
-3. Otwórz frontend w `http://localhost:3000` i backend w `http://localhost:4000`.
+Open the frontend at `http://localhost:3000` and the backend at `http://localhost:4000`.
