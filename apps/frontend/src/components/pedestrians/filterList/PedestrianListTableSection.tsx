@@ -2,7 +2,8 @@ import { useCallback } from "react";
 import { List } from "react-window";
 import { LIST_HEIGHT, OVERSCAN_COUNT, ROW_GRID, ROW_HEIGHT } from "./constants";
 import { VirtualizedPedestrianListRow } from "./VirtualizedPedestrianListRow";
-import type { PedestrianRowListProps, PedestrianSort, PedestrianSortColumn } from "./types";
+import type { PedestrianRowListProps } from "./types";
+import { PedestrianSort, PedestrianSortColumn } from "../../../types/pedestrianSort";
 
 interface PedestrianListTableSectionProps {
   pedestrianIds: string[];
