@@ -1,5 +1,7 @@
 export { MOOD_EMOJI_MAP } from "./domain/pedestrians/constants";
 
+export const APP_LOCALE = "en" as const;
+
 export const CITY_CELL_SIZE = 15;
 
 export const CITY_GRID_ROWS = 30;
