@@ -150,8 +150,6 @@ export function useWebSocket(
     );
 
     newSocket.on("connect_error", (err) => {
-      // In development StrictMode, mount/unmount cycles can briefly close a pending
-      // connection. Avoid surfacing that transient state as a user-facing error.
       const isTransientClose = err.message.includes("closed before the connection is established");
       if (!isTransientClose) {
         setError(`Connection error: ${err.message}`);

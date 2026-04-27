@@ -22,8 +22,6 @@ function createBaseGrid(rows: number, cols: number): CityCell[][] {
   );
 }
 
-// Creates a single block footprint where roads form a border and
-// building cells fill the interior. Randomized dimensions keep the city varied.
 function createBuildingFootprint(): CityCell[][] {
   const width = randomIntInclusive(MIN_FOOTPRINT_SIZE, MAX_FOOTPRINT_SIZE);
   const height = randomIntInclusive(MIN_FOOTPRINT_SIZE, MAX_FOOTPRINT_SIZE);
@@ -101,7 +99,6 @@ function touchesExistingDevelopment(
   const footprintRows = footprint.length;
   const footprintCols = footprint[0].length;
 
-  // Scan one-cell margin around candidate footprint to keep city blocks connected.
   for (let row = startRow - 1; row <= startRow + footprintRows; row++) {
     if (row < 0 || row >= gridRows) {
       continue;

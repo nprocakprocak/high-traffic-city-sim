@@ -8,7 +8,6 @@ const CENTER = PIE_CENTER;
 const R = PIE_RADIUS;
 const EPS = 1e-9;
 
-/** One pizza slice: center → start on rim → outer arc to end → close. */
 export function pieSlicePath(
   startAngle: number,
   endAngle: number,
@@ -31,7 +30,6 @@ export function pieSlicePath(
   return `M ${cx} ${cy} L ${x0} ${y0} A ${r} ${r} 0 ${large} 1 ${x1} ${y1} Z`;
 }
 
-/** 360° slice: two semicircular outer arcs, closed to center. */
 function fullPieFromCenterPath(cx: number, cy: number, r: number): string {
   const yTop = cy - r;
   const yBottom = cy + r;
@@ -44,9 +42,6 @@ export interface MoodPieSlice {
   color: string;
 }
 
-/**
- * Slices in display order, starting at 12 o'clock, clockwise, same order as the legend.
- */
 export function buildMoodPieSlices(
   totalCount: number,
   moodCounters: PedestrianStatsMoodCounters,

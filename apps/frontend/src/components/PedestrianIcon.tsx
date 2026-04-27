@@ -9,7 +9,6 @@ interface PedestrianIconProps {
 }
 
 function velocityToPlaybackRate(velocity: number): number {
-  // Keep a conservative range to avoid jarring speed jumps.
   return Math.min(2, Math.max(0.5, velocity / 5));
 }
 
