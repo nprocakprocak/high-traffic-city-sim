@@ -23,7 +23,7 @@ export function PedestrianStatsPanel({
 
   return (
     <div
-      className="w-full min-w-0 max-w-full rounded-lg border border-gray-200/90 bg-stone-50/90 p-4"
+      className="w-full min-w-0 max-w-full rounded-lg border border-stone-300 bg-stone-100 p-4"
       aria-label="Statistics and charts"
     >
       <div className="grid min-w-0 grid-cols-1 gap-6 md:grid-cols-2 md:items-start md:gap-8">

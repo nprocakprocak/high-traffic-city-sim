@@ -42,13 +42,13 @@ function SortHeaderButton({
   return (
     <button
       type="button"
-      className="flex min-w-0 cursor-pointer items-center gap-1 text-left transition-colors motion-reduce:transition-none hover:text-violet-700"
+      className="flex min-w-0 cursor-pointer items-center gap-1 text-left text-slate-800 transition-colors motion-reduce:transition-none hover:text-violet-400"
       onClick={() => onSortColumnSelect(column)}
       aria-label={`Sort by ${label}, ${sortColumnAriaSuffix(selectedSort, column)}`}
     >
-      <span className="truncate">{label}</span>
+      <span className="truncate font-medium">{label}</span>
       <span
-        className={`text-[11px] ${isActive ? "text-violet-700" : "text-stone-400"}`}
+        className={`text-[11px] ${isActive ? "text-violet-800" : "text-stone-500"}`}
         aria-hidden
       >
         {sortEmoji}
@@ -66,11 +66,11 @@ export function PedestrianListTableSection({
 
   return (
     <div
-      className="flex w-full min-w-0 flex-col rounded-md border border-stone-200/80 bg-white/80 shadow-sm"
+      className="flex w-full min-w-0 flex-col rounded-lg border border-stone-300 bg-white/80 shadow-sm"
       aria-label="Pedestrians list"
     >
       <div
-        className={`${ROW_GRID} shrink-0 rounded-t-md border-b border-stone-200/90 bg-stone-50/80 py-1 text-xs font-medium text-stone-500`}
+        className={`${ROW_GRID} shrink-0 rounded-t-lg border-b border-stone-300 bg-stone-100 py-1.5 text-xs text-slate-800`}
       >
         <div className="h-7 w-7 shrink-0" aria-hidden />
         <SortHeaderButton
@@ -99,15 +99,15 @@ export function PedestrianListTableSection({
         />
       </div>
       {pedestrianIds.length === 0 ? (
-        <ul className="list-none rounded-b-md pb-1" aria-label="Pedestrians list items">
-          <li className="px-3 py-4 text-sm text-stone-500">
+        <ul className="list-none rounded-b-lg pb-1" aria-label="Pedestrians list items">
+          <li className="px-3 py-4 text-sm text-slate-600">
             No pedestrians. Waiting for live updates.
           </li>
         </ul>
       ) : (
         <List<PedestrianRowListProps, "ul">
           aria-label="Pedestrians list items"
-          className="list-none rounded-b-md pb-1"
+          className="list-none rounded-b-lg pb-1"
           overscanCount={OVERSCAN_COUNT}
           rowComponent={VirtualizedPedestrianListRow}
           rowCount={pedestrianIds.length}

@@ -24,16 +24,16 @@ export function StatsSpawnColumn({
 
   return (
     <div className="min-w-0 space-y-4" aria-label="Stats and spawn rate">
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-slate-700">
         Total pedestrians:{" "}
-        <span className="font-medium text-gray-800 tabular-nums">{totalCount}</span>
+        <span className="font-medium text-slate-900 tabular-nums">{totalCount}</span>
       </p>
       <div className="space-y-2">
-        <p className="rounded-md border border-violet-200/90 bg-violet-50/85 px-3 py-2 text-sm font-medium text-violet-900/80">
+        <p className="rounded-md border border-violet-200 bg-violet-100 px-3 py-2 text-sm font-medium text-violet-950">
           Slide right to generate more pedestrians
         </p>
         <SpawnIntervalSlider value={spawnIntervalMult} onChange={onSpawnIntChange} />
-        <p className="text-xs leading-relaxed text-gray-500">
+        <p className="text-xs leading-relaxed text-slate-600">
           Pedestrians are added, updated, and removed in real time via WebSocket. Each pedestrian
           follows a randomly generated path, randomly walking or running. Each is assigned a random
           mood and gradually becomes thirsty over time.
@@ -42,14 +42,14 @@ export function StatsSpawnColumn({
           role="status"
           aria-live="polite"
           aria-atomic="true"
-          className="rounded-md border border-blue-200/90 bg-blue-50/85 px-3 py-2 text-sm font-medium text-blue-900/80"
+          className="rounded-md border border-sky-300 bg-sky-100 px-3 py-2 text-sm font-medium text-slate-900"
         >
           Buffering WebSocket messages:{" "}
           <span
             className={
               isWebSocketEventBufferingEnabled
-                ? "font-semibold text-emerald-600"
-                : "font-semibold text-red-600"
+                ? "font-semibold text-emerald-800"
+                : "font-semibold text-red-800"
             }
           >
             {isWebSocketEventBufferingEnabled ? "On" : "Off"}

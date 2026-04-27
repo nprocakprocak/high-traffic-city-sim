@@ -38,7 +38,7 @@ export function MoodShareChart({ totalCount, moodCounters }: MoodShareChartProps
           )}
         </svg>
       </div>
-      <p className="mt-2 text-center text-xs text-gray-500">Mood share (live data)</p>
+      <p className="mt-2 text-center text-xs text-slate-600">Mood share (live data)</p>
     </div>
   );
 }

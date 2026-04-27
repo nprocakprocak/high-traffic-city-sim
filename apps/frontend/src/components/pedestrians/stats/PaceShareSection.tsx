@@ -48,7 +48,7 @@ export function PaceShareSection({ runningCount, walkingCount }: PaceShareSectio
 
   return (
     <div>
-      <p className="mb-2 text-xs text-gray-500">Pace: running vs walking (live data)</p>
+      <p className="mb-2 text-xs text-slate-600">Pace: running vs walking (live data)</p>
       <div
         className="flex h-4 w-full overflow-hidden rounded-md border border-stone-200/80 bg-stone-100/80"
         role="img"
