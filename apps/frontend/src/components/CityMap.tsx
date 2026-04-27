@@ -4,7 +4,7 @@ import { CityCell, GridPosition } from "../types/cell";
 import { PedestriansLayer } from "./PedestriansLayer";
 import { CITY_CELL_SIZE, MAP_MAX_DISPLAYED_PEDESTRIANS } from "../constants";
 import { usePedestriansStore } from "../stores/pedestriansStore";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 
 interface CityMapProps {
   cityGrid: CityCell[][];
@@ -34,7 +34,7 @@ export function CityMap({ cityGrid, onPedestrianStop }: CityMapProps) {
     [cityGrid, rows, cols],
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const wrapper = wrapperRef.current;
     if (!wrapper || baseWidth <= 0) {
       return;

@@ -63,7 +63,11 @@ export default function HomePage() {
           }
         >
           <div className="flex min-w-0 w-full max-w-full flex-col gap-4">
-            <section className="w-full min-w-0" aria-label="City map">
+            <section
+              className="w-full min-w-0"
+              style={{ aspectRatio: `${CITY_GRID_COLS} / ${CITY_GRID_ROWS}` }}
+              aria-label="City map"
+            >
               <CityMap cityGrid={cityGrid} onPedestrianStop={newDestination} />
             </section>
 
