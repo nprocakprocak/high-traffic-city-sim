@@ -42,7 +42,7 @@ function SortHeaderButton({
   return (
     <button
       type="button"
-      className="flex min-w-0 cursor-pointer items-center gap-1 text-left transition-colors hover:text-violet-700"
+      className="flex min-w-0 cursor-pointer items-center gap-1 text-left transition-colors motion-reduce:transition-none hover:text-violet-700"
       onClick={() => onSortColumnSelect(column)}
       aria-label={`Sort by ${label}, ${sortColumnAriaSuffix(selectedSort, column)}`}
     >

@@ -57,7 +57,7 @@ export function PaceShareSection({ runningCount, walkingCount }: PaceShareSectio
         {paceSegments.map((seg) => (
           <div
             key={seg.id}
-            className="h-full min-w-0 transition-[flex-basis] duration-300"
+            className="h-full min-w-0 transition-[flex-basis] duration-300 motion-reduce:transition-none"
             style={{
               flexBasis: `${seg.percent}%`,
               backgroundColor: seg.color,

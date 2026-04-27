@@ -1,6 +1,7 @@
 import { Pedestrian } from "@high-traffic-city-sim/types";
 import { memo, useEffect, useRef } from "react";
 import { CITY_CELL_SIZE, MOOD_EMOJI_MAP } from "../constants";
+import { getPrefersReducedMotion } from "../utils/prefersReducedMotion";
 
 interface PedestrianIconProps {
   pedestrian: Pedestrian;
@@ -43,6 +44,10 @@ function PedestrianIconComponent({ pedestrian, onFinish }: PedestrianIconProps) 
     element.style.transform = `translate3d(${start.x - CITY_CELL_SIZE / 2}px, ${start.y - CITY_CELL_SIZE / 2}px, 0)`;
     if (rest.length === 0) {
       onFinishRef.current(pedestrian.id);
+      return;
+    }
+
+    if (getPrefersReducedMotion()) {
       return;
     }
 
