@@ -13,6 +13,7 @@ interface CityMapProps {
 
 export function CityMap({ cityGrid, onPedestrianStop }: CityMapProps) {
   const pedestrianCount = usePedestriansStore((s) => s.pedestrianIds.length);
+  const overMapLimit = pedestrianCount > MAP_MAX_DISPLAYED_PEDESTRIANS;
   const rows = cityGrid.length;
   const cols = cityGrid[0]?.length ?? 0;
   const baseWidth = cols * CITY_CELL_SIZE;
@@ -68,10 +69,12 @@ export function CityMap({ cityGrid, onPedestrianStop }: CityMapProps) {
         <CityGrid cityGrid={cityGrid} renderCell={renderCell} />
         <PedestriansLayer onPedestrianStop={onPedestrianStop} />
       </div>
-      {pedestrianCount > MAP_MAX_DISPLAYED_PEDESTRIANS ? (
+      {overMapLimit ? (
         <p
           className="pointer-events-none absolute bottom-0 right-0 z-10 max-w-[min(100%,18rem)] bg-stone-100/95 px-2 py-1.5 text-right text-[10px] leading-tight text-stone-600 sm:text-xs"
           role="status"
+          aria-live="polite"
+          aria-atomic="true"
         >
           The city map displays only the last {MAP_MAX_DISPLAYED_PEDESTRIANS} pedestrians.
         </p>

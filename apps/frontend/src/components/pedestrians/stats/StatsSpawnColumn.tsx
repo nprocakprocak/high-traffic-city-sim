@@ -38,7 +38,12 @@ export function StatsSpawnColumn({
           follows a randomly generated path, randomly walking or running. Each is assigned a random
           mood and gradually becomes thirsty over time.
         </p>
-        <p className="rounded-md border border-blue-200/90 bg-blue-50/85 px-3 py-2 text-sm font-medium text-blue-900/80">
+        <p
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          className="rounded-md border border-blue-200/90 bg-blue-50/85 px-3 py-2 text-sm font-medium text-blue-900/80"
+        >
           Buffering WebSocket messages:{" "}
           <span
             className={
