@@ -47,6 +47,14 @@ export function useWebSocket(
     socketRef.current?.emit("set_spawn_interval_mult", value);
   }, []);
 
+  const startSession = useCallback(() => {
+    socketRef.current?.emit("session_start");
+  }, []);
+
+  const stopSession = useCallback(() => {
+    socketRef.current?.emit("session_stop");
+  }, []);
+
   const flushBufferedWebsocketEvents = useCallback(() => {
     if (
       removeBufferRef.current.length === 0 &&
@@ -165,5 +173,7 @@ export function useWebSocket(
     error,
     isConnected,
     setSpawnInterval,
+    startSession,
+    stopSession,
   };
 }

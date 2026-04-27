@@ -52,7 +52,7 @@ export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps)
     [addPedestrians, cityGrid, roadPositions],
   );
 
-  const { error, setSpawnInterval } = useWebSocket(
+  const { error, setSpawnInterval, startSession, stopSession } = useWebSocket(
     onNewPedestrians,
     removePedestrians,
     updatePedestrians,
@@ -63,6 +63,8 @@ export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps)
     updatePedestrians,
     error,
     setSpawnInterval,
+    startSession,
+    stopSession,
     isWebSocketEventBufferingEnabled,
   };
 }

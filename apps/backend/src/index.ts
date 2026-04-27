@@ -22,7 +22,14 @@ const io = new Server(httpServer, {
 io.on("connection", (socket) => {
   console.log(`Client connected: ${socket.id}`);
   const session = new PedestrianSocketSessionService(socket);
-  session.start();
+
+  socket.on("session_start", () => {
+    session.start();
+  });
+
+  socket.on("session_stop", () => {
+    session.pauseSpawn();
+  });
 
   socket.on("set_spawn_interval_mult", (value: unknown) => {
     session.setSpawnIntervalMultiplier(value);
@@ -30,7 +37,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log(`Client disconnected: ${socket.id}`);
-    session.stop();
+    session.shutdown();
   });
 });
 

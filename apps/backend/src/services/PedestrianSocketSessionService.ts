@@ -13,18 +13,29 @@ export class PedestrianSocketSessionService {
     PedestrianSpawnService.defaultMultiplier(),
   );
   private intervalId: ReturnType<typeof setInterval> | undefined;
+  private isRunning = false;
 
   constructor(private readonly socket: Socket) {}
 
   start(): void {
+    if (this.isRunning) {
+      return;
+    }
+    this.isRunning = true;
     this.scheduleSpawnInterval();
   }
 
-  stop(): void {
+  pauseSpawn(): void {
+    this.isRunning = false;
+
     if (this.intervalId !== undefined) {
       clearInterval(this.intervalId);
       this.intervalId = undefined;
     }
+  }
+
+  shutdown(): void {
+    this.pauseSpawn();
 
     for (const timeoutId of this.removalTimeouts) {
       clearTimeout(timeoutId);
@@ -43,7 +54,9 @@ export class PedestrianSocketSessionService {
     this.spawnIntervalMs = PedestrianSpawnService.intervalMsForMultiplier(
       this.spawnIntervalMultiplier,
     );
-    this.scheduleSpawnInterval();
+    if (this.isRunning) {
+      this.scheduleSpawnInterval();
+    }
   }
 
   private scheduleSpawnInterval(): void {

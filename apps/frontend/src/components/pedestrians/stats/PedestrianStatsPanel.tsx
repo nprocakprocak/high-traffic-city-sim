@@ -5,11 +5,15 @@ import { StatsSpawnColumn } from "./StatsSpawnColumn";
 
 export interface PedestrianStatsPanelProps {
   onSpawnIntervalChange: (value: number) => void;
+  onStartSession: () => void;
+  onStopSession: () => void;
   isWebSocketEventBufferingEnabled: boolean;
 }
 
 export function PedestrianStatsPanel({
   onSpawnIntervalChange,
+  onStartSession,
+  onStopSession,
   isWebSocketEventBufferingEnabled,
 }: PedestrianStatsPanelProps) {
   const { totalCount, runningCount, walkingCount, moodCounters } = usePedestriansStore(
@@ -30,6 +34,8 @@ export function PedestrianStatsPanel({
         <StatsSpawnColumn
           totalCount={totalCount}
           onSpawnIntervalChange={onSpawnIntervalChange}
+          onStartSession={onStartSession}
+          onStopSession={onStopSession}
           isWebSocketEventBufferingEnabled={isWebSocketEventBufferingEnabled}
         />
         <PedestrianChartsColumn
