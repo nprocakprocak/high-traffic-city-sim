@@ -18,6 +18,19 @@ interface SortHeaderButtonProps {
   onSortColumnSelect: (column: PedestrianSortColumn) => void;
 }
 
+function sortColumnAriaSuffix(selectedSort: PedestrianSort, column: PedestrianSortColumn) {
+  if (selectedSort.column !== column) {
+    return "not sorted";
+  }
+  if (selectedSort.direction === "none") {
+    return "not sorted";
+  }
+  if (selectedSort.direction === "asc") {
+    return "ascending";
+  }
+  return "descending";
+}
+
 function SortHeaderButton({
   label,
   column,
@@ -31,10 +44,13 @@ function SortHeaderButton({
       type="button"
       className="flex min-w-0 cursor-pointer items-center gap-1 text-left transition-colors hover:text-violet-700"
       onClick={() => onSortColumnSelect(column)}
-      aria-label={`Sort by ${label}`}
+      aria-label={`Sort by ${label}, ${sortColumnAriaSuffix(selectedSort, column)}`}
     >
       <span className="truncate">{label}</span>
-      <span className={`text-[11px] ${isActive ? "text-violet-700" : "text-stone-400"}`}>
+      <span
+        className={`text-[11px] ${isActive ? "text-violet-700" : "text-stone-400"}`}
+        aria-hidden
+      >
         {sortEmoji}
       </span>
     </button>

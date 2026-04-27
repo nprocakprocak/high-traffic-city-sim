@@ -55,16 +55,19 @@ export function PedestrianFilterChipsSection({
   return (
     <div className="flex w-full min-w-0 flex-col gap-2 rounded-md border border-stone-200/80 bg-white/70 p-2 shadow-sm">
       <FilterChips
+        groupLabel="Filter by mood"
         chips={moodChips}
         selectedId={selectedFilters.mood}
         onSelect={(id) => onSelectMood(id as PedestrianFilterSelection["mood"])}
       />
       <FilterChips
+        groupLabel="Filter by pace (running or walking)"
         chips={paceChips}
         selectedId={selectedFilters.pace}
         onSelect={(id) => onSelectPace(id as PedestrianFilterSelection["pace"])}
       />
       <FilterChips
+        groupLabel="Filter by thirst"
         chips={thirstChips}
         selectedId={selectedFilters.thirst}
         onSelect={(id) => onSelectThirst(id as PedestrianFilterSelection["thirst"])}

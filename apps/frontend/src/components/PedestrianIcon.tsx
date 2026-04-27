@@ -76,6 +76,7 @@ function PedestrianIconComponent({ pedestrian, onFinish }: PedestrianIconProps) 
   return (
     <div
       ref={iconRef}
+      aria-hidden
       style={{
         width: `${CITY_CELL_SIZE}px`,
         height: `${CITY_CELL_SIZE}px`,
@@ -83,7 +84,7 @@ function PedestrianIconComponent({ pedestrian, onFinish }: PedestrianIconProps) 
         lineHeight: `${CITY_CELL_SIZE}px`,
         willChange: "transform",
       }}
-      className="absolute left-0 top-0 flex items-center justify-center cursor-default"
+      className="absolute left-0 top-0 flex cursor-default items-center justify-center"
     >
       {MOOD_EMOJI_MAP[pedestrian.mood]}
     </div>

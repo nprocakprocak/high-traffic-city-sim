@@ -31,10 +31,6 @@ export function SpawnIntervalSlider({ value, onChange }: SpawnIntervalSliderProp
           value={uiValue}
           onChange={handleChange}
           aria-label="Adjust pedestrian spawn interval. Right is faster, left is slower"
-          aria-valuemin={MIN_MULT}
-          aria-valuemax={MAX_MULT}
-          aria-valuenow={uiValue}
-          aria-labelledby="spawn-interval-min-label spawn-interval-max-label"
         />
       </div>
     </div>

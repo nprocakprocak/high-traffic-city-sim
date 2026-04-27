@@ -7,11 +7,12 @@ interface FilterChipsProps {
   chips: FilterChip[];
   selectedId: string;
   onSelect: (id: string) => void;
+  groupLabel: string;
 }
 
-export function FilterChips({ chips, selectedId, onSelect }: FilterChipsProps) {
+export function FilterChips({ chips, selectedId, onSelect, groupLabel }: FilterChipsProps) {
   return (
-    <div className="flex min-h-0 flex-wrap gap-1.5" role="group">
+    <div className="flex min-h-0 flex-wrap gap-1.5" role="group" aria-label={groupLabel}>
       {chips.map((chip) => {
         const selected = chip.id === selectedId;
         return (

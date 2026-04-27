@@ -95,7 +95,7 @@ export function useWebSocket(
   }, [isBufferingEnabled, flushBufferedWebsocketEvents]);
 
   useEffect(() => {
-    const socketUrl = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:4000"
+    const socketUrl = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:4000";
     const newSocket: Socket = io(socketUrl, {
       reconnection: true,
       reconnectionDelay: 1000,
