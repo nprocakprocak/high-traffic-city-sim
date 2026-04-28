@@ -14,6 +14,7 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
   mapDisplayedPedestrianIds: [],
   pedestriansById: {},
   stats: EMPTY_STATS,
+  eventsPerSecond: 0,
   selectedFilters: DEFAULT_FILTERS,
   selectedSort: DEFAULT_SORT,
   setSelectedSortColumn: (column) =>
@@ -57,6 +58,7 @@ export const usePedestriansStore = create<PedestriansState>((set) => ({
       ),
       stats: nextStats(state.pedestrianIds, state.pedestriansById, filters),
     })),
+  setEventsPerSecond: (value) => set({ eventsPerSecond: value }),
   addPedestrians: (incoming) =>
     set((state) => {
       if (incoming.length === 0) {

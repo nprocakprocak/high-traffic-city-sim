@@ -12,10 +12,12 @@ export interface PedestriansState {
   mapDisplayedPedestrianIds: string[];
   pedestriansById: Record<string, Pedestrian>;
   stats: PedestrianStatsSummary;
+  eventsPerSecond: number;
   selectedFilters: PedestrianFilterSelection;
   selectedSort: PedestrianSort;
   setSelectedSortColumn: (column: PedestrianSortColumn) => void;
   setSelectedFilters: (filters: PedestrianFilterSelection) => void;
+  setEventsPerSecond: (value: number) => void;
   addPedestrians: (pedestrians: Pedestrian[]) => void;
   updatePedestrians: (items: PedestrianUpdate[]) => void;
   removePedestrians: (ids: string[]) => void;

@@ -1,5 +1,5 @@
 import { Pedestrian } from "@high-traffic-city-sim/types";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { PEDESTRIAN_WEBSOCKET_BUFFERING_THRESHOLD } from "../constants";
 import { usePedestriansStore } from "../stores/pedestriansStore";
 import { CityCell, GridPosition } from "../types/cell";
@@ -16,6 +16,7 @@ export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps)
   const addPedestrians = usePedestriansStore((state) => state.addPedestrians);
   const removePedestrians = usePedestriansStore((state) => state.removePedestrians);
   const updatePedestrians = usePedestriansStore((state) => state.updatePedestrians);
+  const setEventsPerSecond = usePedestriansStore((state) => state.setEventsPerSecond);
   const pedestrianCount = usePedestriansStore((state) => state.pedestrianIds.length);
   const isWebSocketEventBufferingEnabled =
     pedestrianCount > PEDESTRIAN_WEBSOCKET_BUFFERING_THRESHOLD;
@@ -52,12 +53,16 @@ export function usePedestrians({ cityGrid, roadPositions }: UsePedestriansProps)
     [addPedestrians, cityGrid, roadPositions],
   );
 
-  const { error, setSpawnInterval, startSession, stopSession } = useWebSocket(
+  const { error, setSpawnInterval, startSession, stopSession, eventsPerSecond } = useWebSocket(
     onNewPedestrians,
     removePedestrians,
     updatePedestrians,
     { isBufferingEnabled: isWebSocketEventBufferingEnabled },
   );
+
+  useEffect(() => {
+    setEventsPerSecond(eventsPerSecond);
+  }, [eventsPerSecond, setEventsPerSecond]);
 
   return {
     updatePedestrians,

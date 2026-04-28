@@ -17,6 +17,8 @@ export function useWebSocket(
   const isBufferingEnabled = options?.isBufferingEnabled ?? false;
   const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [eventsPerSecond, setEventsPerSecond] = useState(0);
+
   const socketRef = useRef<Socket | null>(null);
   const onNewPedestriansRef = useRef(onNewPedestrians);
   const onRemovePedestriansRef = useRef(onRemovePedestrians);
@@ -26,6 +28,7 @@ export function useWebSocket(
   const addBufferRef = useRef<Pedestrian[]>([]);
   const removeBufferRef = useRef<string[]>([]);
   const updateMapRef = useRef<Map<string, PedestrianFieldUpdates>>(new Map());
+  const pedestrianEventTimestampsRef = useRef<number[]>([]);
 
   useLayoutEffect(() => {
     isBufferingEnabledRef.current = isBufferingEnabled;
@@ -54,6 +57,21 @@ export function useWebSocket(
   const stopSession = useCallback(() => {
     socketRef.current?.emit("session_stop");
   }, []);
+
+  const calculateEventsPerSecond = useCallback(() => {
+    const now = Date.now();
+    const index = pedestrianEventTimestampsRef.current.findIndex(
+      (timestamp) => timestamp >= now - 5000,
+    );
+    if (index === -1) {
+      setEventsPerSecond(0);
+      return;
+    }
+    const newEventTimestamps = pedestrianEventTimestampsRef.current.slice(index);
+    pedestrianEventTimestampsRef.current = newEventTimestamps;
+    const eventsPerSecond = newEventTimestamps.length / 5;
+    setEventsPerSecond(eventsPerSecond);
+  }, [setEventsPerSecond]);
 
   const flushBufferedWebsocketEvents = useCallback(() => {
     if (
@@ -85,7 +103,9 @@ export function useWebSocket(
     if (mergedAddPedestrians.length > 0) {
       onNewPedestriansRef.current(mergedAddPedestrians);
     }
-  }, []);
+
+    calculateEventsPerSecond();
+  }, [calculateEventsPerSecond]);
 
   useEffect(() => {
     if (!isBufferingEnabled) {
@@ -117,6 +137,7 @@ export function useWebSocket(
     });
 
     newSocket.on("pedestrians", (pedestrians: Pedestrian[]) => {
+      pedestrianEventTimestampsRef.current.push(Date.now());
       if (isBufferingEnabledRef.current) {
         if (pedestrians.length > 0) {
           addBufferRef.current = addBufferRef.current.concat(pedestrians);
@@ -124,19 +145,23 @@ export function useWebSocket(
         return;
       }
       onNewPedestriansRef.current(pedestrians);
+      calculateEventsPerSecond();
     });
 
     newSocket.on("remove_pedestrian", (id: string) => {
+      pedestrianEventTimestampsRef.current.push(Date.now());
       if (isBufferingEnabledRef.current) {
         removeBufferRef.current.push(id);
         return;
       }
       onRemovePedestriansRef.current([id]);
+      calculateEventsPerSecond();
     });
 
     newSocket.on(
       "update_pedestrian",
       ({ id, ...updates }: { id: string } & Partial<Omit<Pedestrian, "id">>) => {
+        pedestrianEventTimestampsRef.current.push(Date.now());
         if (isBufferingEnabledRef.current) {
           const nextUpdates: PedestrianFieldUpdates = {
             ...(updateMapRef.current.get(id) ?? {}),
@@ -146,6 +171,7 @@ export function useWebSocket(
           return;
         }
         onUpdatePedestriansRef.current([{ id, updates }]);
+        calculateEventsPerSecond();
       },
     );
 
@@ -173,5 +199,6 @@ export function useWebSocket(
     setSpawnInterval,
     startSession,
     stopSession,
+    eventsPerSecond,
   };
 }

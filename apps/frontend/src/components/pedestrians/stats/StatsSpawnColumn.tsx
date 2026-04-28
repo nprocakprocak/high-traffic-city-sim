@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { usePedestriansStore } from "../../../stores/pedestriansStore";
 import { SpawnIntervalSlider } from "./SpawnIntervalSlider";
 
 interface StatsSpawnColumnProps {
@@ -18,6 +19,7 @@ export function StatsSpawnColumn({
 }: StatsSpawnColumnProps) {
   const [spawnIntervalMult, setSpawnIntervalMultState] = useState(16);
   const [isRunning, setIsRunning] = useState(false);
+  const eventsPerSecond = usePedestriansStore((state) => state.eventsPerSecond);
 
   const onSpawnIntChange = useCallback(
     (value: number) => {
@@ -88,6 +90,20 @@ export function StatsSpawnColumn({
               >
                 {isWebSocketEventBufferingEnabled ? "On" : "Off"}
               </span>
+            </p>
+            <p
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+              className="rounded-md border px-3 py-2 text-sm font-medium"
+              style={{
+                borderColor: "#5dbe8f",
+                backgroundColor: "#5dbe8f33",
+                color: "#14532d",
+              }}
+            >
+              WebSocket updates per second:{" "}
+              <span className="font-semibold tabular-nums">{eventsPerSecond.toFixed(1)}</span>
             </p>
           </>
         ) : null}
