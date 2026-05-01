@@ -12,7 +12,8 @@
     "build:frontend": "npm --workspace @high-traffic-city-sim/frontend run build",
     "start:backend": "npm --workspace @high-traffic-city-sim/backend run start",
     "start:frontend": "npm --workspace @high-traffic-city-sim/frontend run start",
-    "dev": "npx concurrently \"npm run dev:backend\" \"npm run dev:frontend\""
+    "dev": "npx concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "test": "npm run test --workspaces --if-present"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
