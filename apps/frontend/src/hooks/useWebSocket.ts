@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
-import { Pedestrian } from "@high-traffic-city-sim/types";
+import {
+  PEDESTRIAN_LIMIT_EXCEEDED_SOCKET_EVENT,
+  type Pedestrian,
+  type PedestrianLimitExceededPayload,
+} from "@high-traffic-city-sim/types";
 import { PEDESTRIAN_WEBSOCKET_BUFFER_FLUSH_MS } from "../constants";
 import type { PedestrianFieldUpdates, PedestrianUpdate } from "../stores/pedestriansStore";
 
@@ -51,6 +55,7 @@ export function useWebSocket(
   }, []);
 
   const startSession = useCallback(() => {
+    setError(null);
     socketRef.current?.emit("session_start");
   }, []);
 
@@ -123,7 +128,7 @@ export function useWebSocket(
   }, [isBufferingEnabled, flushBufferedWebsocketEvents]);
 
   useEffect(() => {
-    const socketUrl = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:4000";
+    const socketUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const newSocket: Socket = io(socketUrl, {
       reconnection: true,
       reconnectionDelay: 1000,
@@ -135,6 +140,13 @@ export function useWebSocket(
       setIsConnected(true);
       setError(null);
     });
+
+    newSocket.on(
+      PEDESTRIAN_LIMIT_EXCEEDED_SOCKET_EVENT,
+      (payload: PedestrianLimitExceededPayload) => {
+        setError(payload.message);
+      },
+    );
 
     newSocket.on("pedestrians", (pedestrians: Pedestrian[]) => {
       pedestrianEventTimestampsRef.current.push(Date.now());

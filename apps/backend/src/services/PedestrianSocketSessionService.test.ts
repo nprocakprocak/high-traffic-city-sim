@@ -45,7 +45,7 @@ describe("PedestrianSocketSessionService", () => {
 
   it("starts spawning once and emits batches on interval", () => {
     const { socket, emitted } = createSocketMock();
-    const session = new PedestrianSocketSessionService(socket);
+    const session = new PedestrianSocketSessionService(socket, 0);
     let idCounter = 0;
     const defaultSpawnInterval = PedestrianSpawnService.intervalMsForMultiplier(
       PedestrianSpawnService.defaultMultiplier(),
@@ -70,7 +70,7 @@ describe("PedestrianSocketSessionService", () => {
 
   it("reschedules spawn interval when multiplier changes while running", () => {
     const { socket, emitted } = createSocketMock();
-    const session = new PedestrianSocketSessionService(socket);
+    const session = new PedestrianSocketSessionService(socket, 0);
     let idCounter = 0;
     const defaultSpawnInterval = PedestrianSpawnService.intervalMsForMultiplier(
       PedestrianSpawnService.defaultMultiplier(),
@@ -95,7 +95,7 @@ describe("PedestrianSocketSessionService", () => {
 
   it("stops scheduled updates and removals after shutdown", () => {
     const { socket, emitted } = createSocketMock();
-    const session = new PedestrianSocketSessionService(socket);
+    const session = new PedestrianSocketSessionService(socket, 0);
     const defaultSpawnInterval = PedestrianSpawnService.intervalMsForMultiplier(
       PedestrianSpawnService.defaultMultiplier(),
     );
@@ -119,7 +119,7 @@ describe("PedestrianSocketSessionService", () => {
 
   it("emits removal and stops further updates after pedestrian lifetime ends", () => {
     const { socket, emitted } = createSocketMock();
-    const session = new PedestrianSocketSessionService(socket);
+    const session = new PedestrianSocketSessionService(socket, 0);
     const defaultSpawnInterval = PedestrianSpawnService.intervalMsForMultiplier(
       PedestrianSpawnService.defaultMultiplier(),
     );

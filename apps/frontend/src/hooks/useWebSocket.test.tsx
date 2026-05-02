@@ -1,7 +1,10 @@
 // @vitest-environment jsdom
 import { renderHook, act } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { Pedestrian } from "@high-traffic-city-sim/types";
+import {
+  PEDESTRIAN_LIMIT_EXCEEDED_SOCKET_EVENT,
+  type Pedestrian,
+} from "@high-traffic-city-sim/types";
 import type { Socket } from "socket.io-client";
 import { PEDESTRIAN_WEBSOCKET_BUFFER_FLUSH_MS } from "../constants";
 import { useWebSocket } from "./useWebSocket";
@@ -134,6 +137,40 @@ describe("useWebSocket", () => {
       { id: "b", updates: { mood: "sad", velocity: 9 } },
     ]);
     expect(onNewPedestrians).toHaveBeenCalledWith([buildPedestrian("x"), buildPedestrian("y")]);
+  });
+
+  it("sets error when pedestrian limit is exceeded", () => {
+    const { result } = renderHook(() => useWebSocket(vi.fn(), vi.fn(), vi.fn()));
+
+    act(() => {
+      socket.trigger("connect", undefined);
+    });
+
+    act(() => {
+      socket.trigger(PEDESTRIAN_LIMIT_EXCEEDED_SOCKET_EVENT, {
+        message: "Pedestrian limit exceeded (501 exceeds maximum 500).",
+      });
+    });
+
+    expect(result.current.error).toBe("Pedestrian limit exceeded (501 exceeds maximum 500).");
+  });
+
+  it("clears error when starting a session", () => {
+    const { result } = renderHook(() => useWebSocket(vi.fn(), vi.fn(), vi.fn()));
+
+    act(() => {
+      socket.trigger("connect", undefined);
+    });
+
+    act(() => {
+      socket.trigger("connect_error", new Error("boom"));
+    });
+    expect(result.current.error).toBe("Connection error: boom");
+
+    act(() => {
+      result.current.startSession();
+    });
+    expect(result.current.error).toBeNull();
   });
 
   it("reports non-transient connection errors only", () => {

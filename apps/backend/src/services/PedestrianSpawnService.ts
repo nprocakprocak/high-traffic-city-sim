@@ -1,7 +1,4 @@
-const DEFAULT_SPAWN_MULT = 16;
-const MIN_SPAWN_MULT = 1;
-const MAX_SPAWN_MULT = 20;
-const SPAWN_BASE_MS = 50;
+import { DEFAULT_SPAWN_MULT, MAX_SPAWN_MULT, MIN_SPAWN_MULT, SPAWN_BASE_MS } from "./constants.js";
 
 export class PedestrianSpawnService {
   static defaultMultiplier(): number {

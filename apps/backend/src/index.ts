@@ -1,13 +1,15 @@
-import express from "express";
+import "dotenv/config";
 import cors from "cors";
+import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import { getPedestriansFor } from "./services/DatabaseService.js";
 import { PedestrianSocketSessionService } from "./services/PedestrianSocketSessionService.js";
 
 const app = express();
-const url = process.env.RAILWAY_PUBLIC_DOMAIN ? process.env.RAILWAY_PUBLIC_DOMAIN : "http://localhost";
-const corsOrigin = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN : "http://localhost:3000";
-const port = process.env.PORT ? Number(process.env.PORT) : 4000;
+const url = process.env.RAILWAY_PUBLIC_DOMAIN;
+const corsOrigin = process.env.CORS_ORIGIN;
+const port = Number(process.env.PORT);
 
 app.use(cors());
 
@@ -19,16 +21,20 @@ const io = new Server(httpServer, {
   },
 });
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   console.log(`Client connected: ${socket.id}`);
-  const session = new PedestrianSocketSessionService(socket);
+  const clientIp = socket.handshake.address;
+  const pedestriansCount = await getPedestriansFor(clientIp);
+  const session = new PedestrianSocketSessionService(socket, pedestriansCount);
 
-  socket.on("session_start", () => {
+  socket.on("session_start", async () => {
     session.start();
   });
 
   socket.on("session_stop", () => {
-    session.pauseSpawn();
+    if (session.isSessionRunning()) {
+      session.pauseSpawn();
+    }
   });
 
   socket.on("set_spawn_interval_mult", (value: unknown) => {
