@@ -3,7 +3,7 @@ import cors from "cors";
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { getPedestriansFor } from "./services/DatabaseService.js";
+import { getPedestriansFor, saveVisitsFor } from "./services/DatabaseService.js";
 import { PedestrianSocketSessionService } from "./services/PedestrianSocketSessionService.js";
 
 const app = express();
@@ -25,7 +25,12 @@ io.on("connection", async (socket) => {
   console.log(`Client connected: ${socket.id}`);
   const clientIp = socket.handshake.address;
   const pedestriansCount = await getPedestriansFor(clientIp);
-  const session = new PedestrianSocketSessionService(socket, pedestriansCount);
+
+  if (pedestriansCount === undefined) {
+    await saveVisitsFor(clientIp, 0);
+  }
+  
+  const session = new PedestrianSocketSessionService(socket, pedestriansCount ?? 0);
 
   socket.on("session_start", async () => {
     session.start();

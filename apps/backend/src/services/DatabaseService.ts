@@ -18,16 +18,16 @@ interface VisitsRow extends QueryResultRow {
   pedestrians: number;
 }
 
-export const getPedestriansFor = async (ip: string): Promise<number> => {
+export const getPedestriansFor = async (ip: string): Promise<number | undefined> => {
   const result = await pool.query<VisitsRow>("SELECT pedestrians FROM visits WHERE ip = $1 LIMIT 1", [ip]);
   const row = result.rows[0];
 
   if (!row) {
-    return 0;
+    return undefined;
   }
 
   const pedestriansCount = Number(row.pedestrians);
-  return Number.isNaN(pedestriansCount) ? 0 : pedestriansCount;
+  return Number.isNaN(pedestriansCount) ? undefined : pedestriansCount;
 };
 
 export const saveVisitsFor = async (ip: string, visits: number): Promise<void> => {
