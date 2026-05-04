@@ -37,6 +37,8 @@ The monorepo contains:
 
 ## Running
 
+Rename `.env.example` files to `.env` and provide local database credentials.
+
 ```bash
    npm install
    npm run dev
