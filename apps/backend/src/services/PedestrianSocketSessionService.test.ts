@@ -17,6 +17,7 @@ function createSocketMock(): { socket: Socket; emitted: EmittedSocketEvent[] } {
       emitted.push({ event, payload });
       return true;
     }),
+    handshake: { address: "127.0.0.1" },
   } as unknown as Socket;
 
   return { socket, emitted };

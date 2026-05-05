@@ -37,7 +37,7 @@ The monorepo contains:
 
 ## Running
 
-Rename `.env.example` files to `.env` and provide local database credentials.
+Rename `.env.example` files to `.env` and (optionally) replace environmental variables if needed. You can skip local database credentials if you want.
 
 ```bash
    npm install

@@ -3,13 +3,13 @@ import cors from "cors";
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import { loadServerEnv } from "./config/serverEnv.js";
 import { getPedestriansFor, saveVisitsFor } from "./services/DatabaseService.js";
 import { PedestrianSocketSessionService } from "./services/PedestrianSocketSessionService.js";
 
+const { railwayPublicDomain, corsOrigin, port } = loadServerEnv();
+
 const app = express();
-const url = process.env.RAILWAY_PUBLIC_DOMAIN;
-const corsOrigin = process.env.CORS_ORIGIN;
-const port = Number(process.env.PORT);
 
 app.use(cors());
 
@@ -53,5 +53,5 @@ io.on("connection", async (socket) => {
 });
 
 httpServer.listen(port, () => {
-  console.log(`Backend is running at ${url}:${port}`);
+  console.log(`Backend is running at ${railwayPublicDomain}:${port}`);
 });
