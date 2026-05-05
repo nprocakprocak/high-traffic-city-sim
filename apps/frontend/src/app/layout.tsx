@@ -1,6 +1,6 @@
+import "dotenv/config";
 import "./globals.css";
 import type { Metadata } from "next";
-import "dotenv/config";
 import { APP_LOCALE } from "../constants";
 
 export const metadata: Metadata = {
