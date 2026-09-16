@@ -4,6 +4,8 @@ import { SpawnIntervalSlider } from "./SpawnIntervalSlider";
 
 interface StatsSpawnColumnProps {
   totalCount: number;
+  isRunning: boolean;
+  onIsRunningChange: (isRunning: boolean) => void;
   onSpawnIntervalChange: (value: number) => void;
   onStartSession: () => void;
   onStopSession: () => void;
@@ -12,13 +14,14 @@ interface StatsSpawnColumnProps {
 
 export function StatsSpawnColumn({
   totalCount,
+  isRunning,
+  onIsRunningChange,
   onSpawnIntervalChange,
   onStartSession,
   onStopSession,
   isWebSocketEventBufferingEnabled,
 }: StatsSpawnColumnProps) {
   const [spawnIntervalMult, setSpawnIntervalMultState] = useState(16);
-  const [isRunning, setIsRunning] = useState(false);
   const eventsPerSecond = usePedestriansStore((state) => state.eventsPerSecond);
 
   const onSpawnIntChange = useCallback(
@@ -32,13 +35,20 @@ export function StatsSpawnColumn({
   const onToggleRunning = useCallback(() => {
     if (isRunning) {
       onStopSession();
-      setIsRunning(false);
+      onIsRunningChange(false);
     } else {
       onStartSession();
       onSpawnIntervalChange(spawnIntervalMult);
-      setIsRunning(true);
+      onIsRunningChange(true);
     }
-  }, [isRunning, onStartSession, onStopSession, onSpawnIntervalChange, spawnIntervalMult]);
+  }, [
+    isRunning,
+    onIsRunningChange,
+    onStartSession,
+    onStopSession,
+    onSpawnIntervalChange,
+    spawnIntervalMult,
+  ]);
 
   return (
     <div className="min-w-0 space-y-4" aria-label="Stats and spawn rate">

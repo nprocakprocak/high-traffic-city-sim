@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { usePedestriansStore } from "../../../stores/pedestriansStore";
 import { PedestrianChartsColumn } from "./PedestrianChartsColumn";
@@ -16,6 +17,7 @@ export function PedestrianStatsPanel({
   onStopSession,
   isWebSocketEventBufferingEnabled,
 }: PedestrianStatsPanelProps) {
+  const [isRunning, setIsRunning] = useState(false);
   const { totalCount, runningCount, walkingCount, moodCounters } = usePedestriansStore(
     useShallow((state) => ({
       totalCount: state.stats.totalCount,
@@ -33,17 +35,26 @@ export function PedestrianStatsPanel({
       <div className="grid min-w-0 grid-cols-1 gap-6 md:grid-cols-2 md:items-start md:gap-8">
         <StatsSpawnColumn
           totalCount={totalCount}
+          isRunning={isRunning}
+          onIsRunningChange={setIsRunning}
           onSpawnIntervalChange={onSpawnIntervalChange}
           onStartSession={onStartSession}
           onStopSession={onStopSession}
           isWebSocketEventBufferingEnabled={isWebSocketEventBufferingEnabled}
         />
-        <PedestrianChartsColumn
-          totalCount={totalCount}
-          runningCount={runningCount}
-          walkingCount={walkingCount}
-          moodCounters={moodCounters}
-        />
+        {isRunning ? (
+          <PedestrianChartsColumn
+            totalCount={totalCount}
+            runningCount={runningCount}
+            walkingCount={walkingCount}
+            moodCounters={moodCounters}
+          />
+        ) : (
+          <div
+            className="hidden min-w-0 md:block md:border-l md:border-stone-200/80 md:pl-8"
+            aria-hidden="true"
+          />
+        )}
       </div>
     </div>
   );
