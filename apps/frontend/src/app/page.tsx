@@ -5,6 +5,7 @@ import { CityMap } from "../components/CityMap";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { PedestrianFilterList } from "../components/pedestrians/filterList/PedestrianFilterList";
 import { PedestrianStatsPanel } from "../components/pedestrians/stats/PedestrianStatsPanel";
+import { WelcomePopup } from "../components/WelcomePopup";
 import { CITY_CELL_SIZE, CITY_GRID_COLS, CITY_GRID_ROWS } from "../constants";
 import { usePedestrians } from "../hooks/usePedestrians";
 import { usePedestriansStore } from "../stores/pedestriansStore";
@@ -57,6 +58,7 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen p-6">
+      <WelcomePopup />
       <ErrorDisplay error={error} />
 
       <div className="mx-auto max-w-[1920px]">
